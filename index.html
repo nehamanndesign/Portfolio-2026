@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neha Mann</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Cormorant+Garamond:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=uncut-sans@700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --dim:  #3a3a3a;
+      --rule: #181818;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Share Tech Mono', monospace;
+      overflow-x: hidden;
+      cursor: none;
+      transition: background-color 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* ─── CHALK CANVAS ─── */
+    #chalk {
+      position: fixed; inset: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ─── CHALK TIMER ─── */
+    #chalk-timer {
+      position: fixed; top: 62px; left: 36px;
+      z-index: 300;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.25);
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+    #chalk-timer.ending { color: rgba(255,255,255,0.7); }
+
+    /* ─── CURSOR ─── */
+    #cur {
+      position: fixed; width: 8px; height: 8px;
+      background: rgba(255,255,252,0.9);
+      border-radius: 1px;
+      transform: translate(-50%,-55%) rotate(-25deg);
+      pointer-events: none; z-index: 201;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 36px;
+    }
+    .nav-name {
+      font-size: 11px; letter-spacing: 0.06em;
+      color: #fff; text-decoration: none; cursor: none;
+    }
+    .nav-links { display: flex; gap: 44px; }
+    .nav-link {
+      font-size: 11px; letter-spacing: 0.06em;
+      color: #fff; text-decoration: none; cursor: none; transition: opacity 0.2s;
+    }
+    .nav-link:hover { opacity: 0.35; }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      width: 100vw; height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      padding: 56px 36px 44px;
+      overflow: hidden;
+    }
+
+    .hero-text {
+      position: relative; z-index: 1;
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+    }
+
+    .hero-footer { position: relative; z-index: 1; }
+
+    .hero-line {
+      display: block;
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 700;
+      font-size: 20vw;
+      line-height: 0.86;
+      color: #fff;
+      white-space: nowrap;
+      letter-spacing: -0.03em;
+    }
+
+    #alive {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-style: normal;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .amp {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .sq {
+      display: inline-block;
+      width: 0.15em; height: 0.15em;
+      background: #fff;
+      margin-left: 0.12em;
+      vertical-align: baseline;
+    }
+
+    .hero-footer {
+      display: flex; gap: 80px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(9px, 1vw, 11px);
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    /* ─── INTRO ─── */
+    .intro {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-top: 1px solid var(--rule);
+      padding: 80px 36px 100px;
+    }
+
+    .intro-left {
+      padding-right: 60px;
+    }
+
+    .intro-label {
+      font-size: 8px; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 40px;
+    }
+
+    .intro-name {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 700;
+      font-size: clamp(52px, 7vw, 108px);
+      letter-spacing: -0.04em;
+      line-height: 0.88;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .intro-role {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 700;
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--dim); line-height: 2;
+    }
+
+    .intro-right {
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+
+    .intro-body {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 400;
+      font-size: clamp(15px, 1.5vw, 19px);
+      line-height: 1.65;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .section-header {
+      padding: 24px 36px;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .section-label {
+      font-size: 8px; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--dim);
+    }
+    .section-count {
+      font-size: 8px; letter-spacing: 0.2em; color: var(--dim);
+    }
+
+    /* ─── ROLE BLOCKS ─── */
+    .role-block {
+      border-top: 1px solid var(--rule);
+      margin-top: 80px;
+    }
+
+    .role-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      padding: 40px 36px;
+      border-bottom: 1px solid var(--rule);
+      position: sticky; top: 0;
+      background: var(--flood-bg, #000); z-index: 10;
+      transition: background-color 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+      align-items: start;
+    }
+
+    .role-left { display: flex; flex-direction: column; gap: 10px; }
+
+    .role-date {
+      font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .role-title-text {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 700;
+      font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .role-company {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 2.5vw, 36px);
+      letter-spacing: -0.02em; line-height: 1;
+      color: #fff;
+    }
+
+    .role-intro {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 400;
+      font-size: clamp(14px, 1.4vw, 18px);
+      line-height: 1.65;
+      color: rgba(255,255,255,0.45);
+      padding-top: 4px;
+    }
+
+    /* ─── EDITORIAL LAYOUT (Parallel tasks) ─── */
+    .rp-editorial {
+      padding: 0 36px 100px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .rp-ed-title-row {
+      padding: 60px 0 48px;
+      display: flex; align-items: baseline; justify-content: space-between;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 0;
+    }
+
+    .rp-ed-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(60px, 8vw, 130px);
+      letter-spacing: -0.04em; line-height: 0.88;
+      color: #fff;
+      text-decoration: none; cursor: none;
+      transition: opacity 0.2s;
+    }
+    .rp-ed-title:hover { opacity: 0.45; }
+
+    .rp-ed-num {
+      font-size: 8px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--dim); align-self: flex-start; padding-top: 8px;
+    }
+
+    /* main split: image left, text right */
+    .rp-ed-split {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .rp-ed-img-main {
+      background: #0d0d0d; overflow: hidden;
+      aspect-ratio: 4/5;
+      border-right: 1px solid var(--rule);
+    }
+    .rp-ed-img-main img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1);
+      mix-blend-mode: screen; opacity: 0.5;
+    }
+
+    .rp-ed-right {
+      display: flex; flex-direction: column;
+      border-left: none;
+    }
+
+    .rp-ed-lead {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 400;
+      font-size: clamp(16px, 1.6vw, 22px);
+      line-height: 1.6;
+      color: rgba(255,255,255,0.5);
+      padding: 40px 40px 48px;
+      border-bottom: 1px solid var(--rule);
+      flex: 1;
+    }
+
+    .rp-ed-meta-stack {
+      display: flex; flex-direction: column;
+    }
+
+    .rp-ed-meta-item {
+      padding: 24px 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-ed-meta-item:last-child { border-bottom: none; }
+
+    .rp-ed-meta-label {
+      font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 8px;
+    }
+
+    .rp-ed-meta-text {
+      font-family: 'Uncut Sans', sans-serif;
+      font-size: 13px; line-height: 1.65;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* full-width strip */
+    .rp-ed-strip {
+      width: 100%; background: #0d0d0d; overflow: hidden;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-ed-strip img {
+      width: 100%; aspect-ratio: 21/6; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1);
+      mix-blend-mode: screen; opacity: 0.4;
+    }
+    .rp-ed-strip-placeholder {
+      width: 100%; aspect-ratio: 21/6; background: #0d0d0d;
+    }
+
+    /* 2-col text row */
+    .rp-ed-bottom {
+      display: grid; grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-ed-bottom-col {
+      padding: 40px 40px 40px 0;
+      border-right: 1px solid var(--rule);
+    }
+    .rp-ed-bottom-col:last-child { border-right: none; padding-left: 40px; padding-right: 0; }
+
+    .rp-ed-bottom-img {
+      aspect-ratio: 16/9; background: #0d0d0d; margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .rp-ed-bottom-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(100%); mix-blend-mode: screen; opacity: 0.45;
+    }
+
+    /* ─── LAYOUT B: image-first (Time-based comms) ─── */
+    .rp-imgfirst {
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-if-hero {
+      width: 100%; background: #0d0d0d; overflow: hidden;
+    }
+    .rp-if-hero img {
+      width: 100%; aspect-ratio: 16/7; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1); mix-blend-mode: screen; opacity: 0.5;
+    }
+    .rp-if-hero-placeholder { width: 100%; aspect-ratio: 16/7; background: #0d0d0d; }
+    .rp-if-below {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border-top: 1px solid var(--rule);
+    }
+    .rp-if-title-col {
+      padding: 52px 36px 52px;
+      border-right: 1px solid var(--rule);
+    }
+    .rp-if-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(42px, 5.5vw, 88px);
+      letter-spacing: -0.04em; line-height: 0.88;
+      color: #fff;
+    }
+    .rp-if-right {
+      padding: 52px 36px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .rp-if-lead {
+      font-family: 'Uncut Sans', sans-serif; font-weight: 400;
+      font-size: clamp(15px, 1.5vw, 20px); line-height: 1.65;
+      color: rgba(255,255,255,0.45); margin-bottom: 40px;
+    }
+    .rp-if-details { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .rp-if-detail-label {
+      font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 8px;
+    }
+    .rp-if-detail-text {
+      font-family: 'Uncut Sans', sans-serif;
+      font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── LAYOUT C: overlay title on hero (Copilot for video) ─── */
+    .rp-overlay {
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+    }
+    .rp-ov-hero {
+      width: 100%; background: #0d0d0d; overflow: hidden; position: relative;
+    }
+    .rp-ov-hero img {
+      width: 100%; aspect-ratio: 16/8; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1); mix-blend-mode: screen; opacity: 0.45;
+    }
+    .rp-ov-title-wrap {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 0 36px 36px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+    }
+    .rp-ov-title {
+      font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800;
+      font-size: clamp(48px, 6.5vw, 112px);
+      letter-spacing: -0.04em; line-height: 0.88; color: #fff;
+    }
+    .rp-ov-strip {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--rule);
+    }
+    .rp-ov-strip-item {
+      padding: 28px 36px;
+      border-right: 1px solid var(--rule);
+    }
+    .rp-ov-strip-item:last-child { border-right: none; }
+    .rp-ov-strip-img { aspect-ratio: 16/9; background: #0d0d0d; margin-bottom: 14px; }
+    .rp-ov-strip-label {
+      font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px;
+    }
+    .rp-ov-strip-text {
+      font-family: 'Uncut Sans', sans-serif; font-size: 12px;
+      line-height: 1.6; color: rgba(255,255,255,0.3);
+    }
+    .rp-ov-lead-row {
+      padding: 40px 36px; border-top: 1px solid var(--rule);
+      display: grid; grid-template-columns: 1fr 2fr; gap: 60px; align-items: start;
+    }
+    .rp-ov-lead-label { font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--dim); }
+    .rp-ov-lead {
+      font-family: 'Uncut Sans', sans-serif; font-weight: 400;
+      font-size: clamp(15px, 1.5vw, 20px); line-height: 1.65; color: rgba(255,255,255,0.45);
+    }
+
+    /* ─── LAYOUT D: numbered sequence (Auto-chaptering) ─── */
+    .rp-sequence {
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-seq-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      padding: 52px 36px; border-bottom: 1px solid var(--rule); gap: 60px;
+    }
+    .rp-seq-title {
+      font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800;
+      font-size: clamp(48px, 6vw, 100px);
+      letter-spacing: -0.04em; line-height: 0.88; color: #fff;
+    }
+    .rp-seq-lead {
+      font-family: 'Uncut Sans', sans-serif; font-weight: 400;
+      font-size: clamp(15px, 1.5vw, 20px); line-height: 1.65;
+      color: rgba(255,255,255,0.45); align-self: end;
+    }
+    .rp-seq-row {
+      display: grid; grid-template-columns: 60px 1fr 1fr;
+      gap: 0; border-bottom: 1px solid var(--rule); align-items: stretch;
+    }
+    .rp-seq-num {
+      padding: 32px 0 32px 36px;
+      font-size: 8px; letter-spacing: 0.4em; color: var(--dim);
+      border-right: 1px solid var(--rule); display: flex; align-items: flex-start; padding-top: 32px;
+    }
+    .rp-seq-img { background: #0d0d0d; overflow: hidden; border-right: 1px solid var(--rule); }
+    .rp-seq-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(100%); mix-blend-mode: screen; opacity: 0.45;
+      min-height: 220px;
+    }
+    .rp-seq-img-placeholder { width: 100%; min-height: 220px; background: #0d0d0d; }
+    .rp-seq-text { padding: 32px 36px; }
+    .rp-seq-text-label { font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--dim); margin-bottom: 10px; }
+    .rp-seq-text-body {
+      font-family: 'Uncut Sans', sans-serif; font-size: 13px;
+      line-height: 1.65; color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── LAYOUT E: grid mosaic (Points of Interest) ─── */
+    .rp-mosaic { border-bottom: 1px solid var(--rule); }
+    .rp-mos-title-bar {
+      padding: 52px 36px 48px;
+      border-bottom: 1px solid var(--rule);
+      display: flex; align-items: baseline; gap: 24px;
+    }
+    .rp-mos-title {
+      font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800;
+      font-size: clamp(48px, 6.5vw, 108px);
+      letter-spacing: -0.04em; line-height: 0.88; color: #fff;
+    }
+    .rp-mos-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 0; border-bottom: 1px solid var(--rule);
+    }
+    .rp-mos-img-a {
+      grid-column: 1 / span 2; grid-row: 1 / span 2;
+      background: #0d0d0d; overflow: hidden;
+      border-right: 1px solid var(--rule);
+    }
+    .rp-mos-img-a img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1); mix-blend-mode: screen; opacity: 0.45;
+      min-height: 420px;
+    }
+    .rp-mos-img-b {
+      background: #0d0d0d; overflow: hidden;
+      border-bottom: 1px solid var(--rule);
+    }
+    .rp-mos-img-b img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(100%); mix-blend-mode: screen; opacity: 0.4;
+      min-height: 210px;
+    }
+    .rp-mos-text-block {
+      padding: 32px 36px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .rp-mos-lead {
+      font-family: 'Uncut Sans', sans-serif; font-weight: 400;
+      font-size: clamp(14px, 1.4vw, 18px); line-height: 1.65; color: rgba(255,255,255,0.45);
+    }
+    .rp-mos-detail-label { font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--dim); margin-bottom: 6px; margin-top: 24px; }
+    .rp-mos-detail-text { font-family: 'Uncut Sans', sans-serif; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.3); }
+    .rp-mos-bottom {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      border-top: 0;
+    }
+    .rp-mos-bottom-item { padding: 32px 36px; border-right: 1px solid var(--rule); }
+    .rp-mos-bottom-item:last-child { border-right: none; }
+    .rp-mos-bottom-label { font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--dim); margin-bottom: 8px; }
+    .rp-mos-bottom-text { font-family: 'Uncut Sans', sans-serif; font-size: 12px; line-height: 1.6; color: rgba(255,255,255,0.3); }
+
+    /* ─── ROLE PROJECTS (default) ─── */
+    .role-project {
+      padding: 0 36px 80px;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .role-project .rp-hero {
+      margin-left: -36px;
+      margin-right: -36px;
+      width: calc(100% + 72px);
+      margin-top: 0;
+      margin-bottom: 52px;
+    }
+
+    .role-project + .role-project .rp-hero {
+      margin-top: 0;
+    }
+
+    .rp-intro {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 60px;
+      align-items: end;
+      margin-bottom: 52px;
+    }
+
+    .rp-title-link {
+      text-decoration: none; cursor: none;
+      display: inline-flex; align-items: flex-start; gap: 14px;
+    }
+
+    .rp-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(52px, 7vw, 108px);
+      letter-spacing: -0.04em; line-height: 0.88;
+      color: #fff; transition: opacity 0.2s;
+    }
+    .rp-title-link:hover .rp-title { opacity: 0.45; }
+
+    .rp-arrow {
+      font-size: 22px; color: rgba(255,255,255,0.2);
+      margin-top: 10px; flex-shrink: 0;
+      transition: color 0.3s, transform 0.3s;
+    }
+    .rp-title-link:hover .rp-arrow {
+      color: rgba(255,255,255,0.7);
+      transform: translate(4px,-4px);
+    }
+
+    .rp-lead {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 400;
+      font-size: clamp(15px, 1.5vw, 19px);
+      line-height: 1.65;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .rp-hero {
+      width: 100%;
+    }
+    .rp-hero-img {
+      width: 100%; aspect-ratio: 16/7;
+      background: #0d0d0d; overflow: hidden;
+    }
+    .rp-hero-img img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.1);
+      mix-blend-mode: screen; opacity: 0.45;
+    }
+
+    .rp-details {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+
+    .rp-detail-img {
+      aspect-ratio: 4/3; background: #0d0d0d; margin-bottom: 16px;
+    }
+
+    .rp-detail-label {
+      font-size: 7px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 10px;
+    }
+
+    .rp-detail-text {
+      font-family: 'Uncut Sans', sans-serif;
+      font-weight: 400; font-size: 13px; line-height: 1.7;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ─── PUBLICATIONS ─── */
+    .pubs-list {
+      padding: 0 36px;
+    }
+
+    .pub-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 80px;
+      align-items: baseline;
+      gap: 24px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--rule);
+      text-decoration: none;
+      cursor: none;
+    }
+    .pub-row:hover .pub-title { opacity: 0.5; }
+
+    .pub-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      font-size: clamp(18px, 2vw, 28px);
+      letter-spacing: -0.01em;
+      color: #fff;
+      transition: opacity 0.2s;
+    }
+
+    .pub-source {
+      font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .pub-year {
+      font-size: 8px; letter-spacing: 0.2em;
+      color: var(--dim); text-align: right;
+    }
+
+    /* ─── WRITING CARDS ─── */
+    .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 20px 36px;
+    }
+
+    .writing-card {
+      aspect-ratio: 3/4;
+      text-decoration: none; cursor: none;
+      display: block;
+      position: relative; overflow: hidden;
+    }
+
+    .writing-card-bg {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      transition: opacity 0.45s ease;
+    }
+
+    .writing-card-overlay {
+      position: absolute; inset: 0;
+      background: #000;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+    .writing-card:hover .writing-card-overlay { opacity: 1; }
+
+    .writing-card-content {
+      position: absolute; inset: 0;
+      padding: 36px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      opacity: 0;
+      transition: opacity 0.45s ease;
+    }
+    .writing-card:hover .writing-card-content { opacity: 1; }
+
+    .writing-card-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(26px, 2.8vw, 44px);
+      letter-spacing: -0.03em; line-height: 1.0;
+      color: #fff;
+    }
+
+    .writing-card-year {
+      font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-top: 14px;
+    }
+
+    /* ─── FOOTER ─── */
+    .site-footer {
+      border-top: 1px solid var(--rule);
+      padding: 80px 36px 100px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 40px;
+      margin-top: 80px;
+    }
+
+    .footer-lbl {
+      font-size: 8px; letter-spacing: 0.5em;
+      color: var(--dim); text-transform: uppercase; margin-bottom: 20px;
+    }
+
+    .footer-email {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+      font-size: clamp(32px, 5vw, 72px);
+      letter-spacing: -0.02em; line-height: 0.9;
+      color: #fff; text-decoration: none; cursor: none;
+      transition: opacity 0.2s; display: block;
+    }
+    .footer-email:hover { opacity: 0.4; }
+
+    .footer-right {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
+    }
+    .footer-right a {
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--dim); text-decoration: none; cursor: none; transition: color 0.2s;
+    }
+    .footer-right a:hover { color: #fff; }
+
+    .footer-bar {
+      border-top: 1px solid var(--rule);
+      padding: 20px 36px;
+      display: flex; justify-content: space-between;
+      font-size: 8px; letter-spacing: 0.18em; color: var(--dim);
+    }
+  
+    /* ─── EDIT MODE ─── */
+    #edit-bar {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
+      color: #fff; border: 1px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; gap: 24px;
+      padding: 12px 22px; border-radius: 40px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+      z-index: 500; white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #edit-bar.visible { opacity: 1; pointer-events: all; }
+    #edit-bar .edit-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #4ade80; flex-shrink: 0;
+    }
+    #edit-bar button {
+      background: none; border: none; padding: 0;
+      font-family: inherit; font-size: inherit; letter-spacing: inherit; text-transform: inherit;
+      color: rgba(255,255,255,0.45); cursor: pointer;
+      transition: color 0.15s;
+    }
+    #edit-bar button:hover { color: #fff; }
+    #edit-bar .divider { color: rgba(255,255,255,0.15); }
+
+    body.edit-mode { cursor: auto; }
+    body.edit-mode [contenteditable="true"] {
+      outline: none; cursor: text;
+      border-bottom: 1px dashed rgba(255,255,255,0.25);
+    }
+    body.edit-mode [contenteditable="true"]:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    body.edit-mode [contenteditable="true"]:focus {
+      border-bottom-color: rgba(255,255,255,0.6);
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ─── COPY TOGGLE ─── */
+    #copy-toggle {
+      position: fixed; bottom: 24px; left: 36px; z-index: 250;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      background: transparent; border: 1px solid var(--rule);
+      padding: 10px 14px; cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    #copy-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.35); }
+    #copy-toggle.is-old { color: rgba(255,220,60,0.8); border-color: rgba(255,220,60,0.4); }
+  
+    /* ─── AMP + PAGE FLOOD ─── */
+    .amp { cursor: none; }
+
+    /* ─── CONTROLS (bottom-left) ─── */
+    #controls {
+      position: fixed; bottom: 36px; left: 36px;
+      z-index: 300;
+      display: flex; flex-direction: column; gap: 10px;
+      align-items: flex-start;
+    }
+    .ctrl-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.22);
+      background: none; border: none; cursor: none; padding: 0;
+      transition: color 0.2s;
+    }
+    .ctrl-btn:hover { color: rgba(255,255,255,0.7); }
+    .ctrl-btn.active { color: #fff; }
+
+    /* ─── DUOTONE MODE OVERRIDES ─── */
+    body.duotone .rp-title,
+    body.duotone .role-company,
+    body.duotone .intro-name,
+    body.duotone .hero-line { color: var(--dt, #fff); }
+
+    body.duotone .rp-lead,
+    body.duotone .role-intro,
+    body.duotone .rp-detail-text,
+    body.duotone .role-date,
+    body.duotone .role-title-text { color: var(--dt, rgba(255,255,255,0.45)); opacity: 0.6; }
+
+    body.duotone .nav-name,
+    body.duotone .nav-link { color: var(--dt, #fff); }
+  </style>
+</head>
+<body>
+
+<canvas id="chalk"></canvas>
+<div id="chalk-timer">0:10</div>
+<div id="cur"></div>
+<button id="copy-toggle" type="button" aria-pressed="false">New copy · press c</button>
+
+
+
+<nav>
+  <a href="#top" class="nav-name">Neha Mann</a>
+  <div class="nav-links">
+    <a href="#work" class="nav-link">Work</a>
+    <a href="#pubs" class="nav-link">Writing</a>
+    <a href="#contact" class="nav-link">Info</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero" id="top">
+  <div class="hero-text">
+    <span class="hero-line" id="l1">Imagination</span>
+    <span class="hero-line" id="l2">is <span id="alive">alive</span> <span class="amp" id="amp">&amp;</span></span>
+    <span class="hero-line" id="l3"><span id="well">well</span><span class="sq"></span></span>
+  </div>
+  <div class="hero-footer">
+    <span>Neha Mann</span>
+    <span>Senior Designer</span>
+    <span>Office, Microsoft</span>
+  </div>
+</section>
+
+<!-- ─── INTRO ─── -->
+<section class="intro">
+  <div class="intro-left">
+    <p class="intro-label">About</p>
+    <p class="intro-name">Neha Mann</p>
+    <p class="intro-role">Senior Product Designer<br>Office · Microsoft</p>
+  </div>
+  <div class="intro-right">
+    <p class="intro-body">I've spent the last decade designing software people love and rely on for their most important work, and the last two rethinking what software should even be.</p>
+  </div>
+</section>
+
+<!-- ─── WORK ─── -->
+<section id="work">
+
+  <div class="section-header" style="margin-top: 80px;">
+    <span class="section-label">Work</span>
+    <span class="section-count">Microsoft · 2020–Present</span>
+  </div>
+
+  <!-- ROLE 1: June 2025 – Present -->
+  <div class="role-block" style="margin-top: 0; border-top: none;">
+    <div class="role-header">
+      <div class="role-left">
+        <span class="role-date">June 2025 – Present</span>
+        <span class="role-title-text">Senior Product Designer</span>
+        <span class="role-company">Word, Excel, PowerPoint · Microsoft</span>
+      </div>
+      <p class="role-intro" data-old="Word, Excel, and PowerPoint are being fundamentally rethought. AI is changing what these tools can do — not just adding features, but reshaping how people actually work inside them. I lead design across two of the biggest bets: async work, and how the suite learns and adapts to each person over time.">Word, Excel, and PowerPoint are being fundamentally rethought. AI is changing what these tools can do — not just adding features, but reshaping how people actually work inside them. I lead design across three bets: letting people hold parallel work without losing context, teaching the suite to recognize what's actually time-sensitive, and building recommendations that learn from how each person works. The throughline is trust — getting the suite to step in exactly when it's useful, and stay out of the way everywhere else.</p>
+    </div>
+
+    <!-- Parallel tasks -->
+    <div class="role-project" id="parallel-tasks">
+      <div class="rp-hero">
+        <div class="rp-hero-img">
+          <img src="https://picsum.photos/seed/parallel/1600/900" alt="">
+        </div>
+      </div>
+      <div class="rp-intro">
+        <div>
+          <a class="rp-title-link" href="case-study.html">
+            <h2 class="rp-title">Parallel work</h2>
+            <span class="rp-arrow">↗</span>
+          </a>
+        </div>
+        <p class="rp-lead" data-old="Designing systems that let people hold multiple work streams without losing context — across Word, Excel, and PowerPoint.">Designing for work that doesn't happen in a straight line — letting people move between Word, Excel, and PowerPoint without losing their place in any of them.</p>
+      </div>
+      <div class="rp-details">
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Research · Discovery</p>
+          <p class="rp-detail-text">Placeholder for detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Design · Systems</p>
+          <p class="rp-detail-text">Placeholder for another detail.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Outcome</p>
+          <p class="rp-detail-text">Impact, metrics, or what shipped.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Personalized recommendations -->
+    <div class="role-project" id="personalized-recs">
+      <div class="rp-hero">
+        <div class="rp-hero-img">
+          <img src="https://picsum.photos/seed/personalrec/1600/900" alt="">
+        </div>
+      </div>
+      <div class="rp-intro">
+        <div>
+          <div class="rp-title-link">
+            <h2 class="rp-title">Personalized<br>recommendations</h2>
+          </div>
+        </div>
+        <p class="rp-lead" data-old="Designing a system that learns what each person needs across Word, Excel, and PowerPoint — surfacing the right suggestions at the right moment, without getting in the way.">Building a system that learns how each person actually works across Word, Excel, and PowerPoint — so the right suggestion shows up before you have to look for it.</p>
+      </div>
+      <div class="rp-details">
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Research · Discovery</p>
+          <p class="rp-detail-text">Placeholder for detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Design · Systems</p>
+          <p class="rp-detail-text">Placeholder for another detail.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Outcome</p>
+          <p class="rp-detail-text">Impact, metrics, or what shipped.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLE 2: Nov 2020 – June 2024 -->
+  <div class="role-block">
+    <div class="role-header">
+      <div class="role-left">
+        <span class="role-date">Nov 2020 – June 2024</span>
+        <span class="role-title-text">Designer II</span>
+        <span class="role-company">Microsoft Stream</span>
+      </div>
+      <p class="role-intro" data-old="Add your intro here — what you worked on as Designer II at Microsoft Stream, the kinds of projects you led, and the impact you made across video and collaboration products.">At Stream, I designed the AI layer that made long video usable. Auto-chaptering gave hours of footage a structure it didn't ship with. Points of Interest surfaced the moments worth returning to. Copilot for video tied it together — letting people search, summarize, and navigate video the way they'd navigate a document. Across all three, the goal was the same: nobody should have to scrub through an hour of footage to find the thirty seconds that matter.</p>
+    </div>
+
+    <!-- Copilot for video -->
+    <div class="role-project" id="copilot-video">
+      <div class="rp-hero">
+        <div class="rp-hero-img">
+          <img src="https://picsum.photos/seed/copilot/1600/900" alt="">
+        </div>
+      </div>
+      <div class="rp-intro">
+        <div>
+          <div class="rp-title-link">
+            <h2 class="rp-title">Copilot for video</h2>
+          </div>
+        </div>
+        <p class="rp-lead" data-old="Bringing AI into the video experience — summaries, search, and navigation that work the way people actually think about video content.">Bringing AI into video the way people actually watch it — summaries, search, and navigation built around moments, not timestamps.</p>
+      </div>
+      <div class="rp-details">
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Research · Discovery</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Design</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Outcome</p>
+          <p class="rp-detail-text">Impact placeholder.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto-chaptering -->
+    <div class="role-project" id="auto-chaptering">
+      <div class="rp-hero">
+        <div class="rp-hero-img">
+          <img src="https://picsum.photos/seed/filmchapter/1600/900" alt="">
+        </div>
+      </div>
+      <div class="rp-intro">
+        <div>
+          <div class="rp-title-link">
+            <h2 class="rp-title">Auto-chaptering</h2>
+          </div>
+        </div>
+        <p class="rp-lead" data-old="Using AI to automatically structure long-form video — chapters that make content navigable and findable without any manual effort.">Giving long videos a structure they didn't ship with — using AI to break footage into chapters people can scan, skip, and return to.</p>
+      </div>
+      <div class="rp-details">
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Research · Discovery</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Design</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Outcome</p>
+          <p class="rp-detail-text">Impact placeholder.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Points of Interest -->
+    <div class="role-project" id="poi">
+      <div class="rp-hero">
+        <div class="rp-hero-img">
+          <img src="https://picsum.photos/seed/mapsview/1600/900" alt="">
+        </div>
+      </div>
+      <div class="rp-intro">
+        <div>
+          <div class="rp-title-link">
+            <h2 class="rp-title">Points of Interest</h2>
+          </div>
+        </div>
+        <p class="rp-lead" data-old="Surfacing meaningful moments within video — the clips, highlights, and sections worth returning to, made discoverable at a glance.">Surfacing the moments in a video worth finding again — highlights and key beats made visible at a glance, without scrubbing through everything else.</p>
+      </div>
+      <div class="rp-details">
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Research · Discovery</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Design</p>
+          <p class="rp-detail-text">Placeholder detail content.</p>
+        </div>
+        <div>
+          <div class="rp-detail-img"></div>
+          <p class="rp-detail-label">Outcome</p>
+          <p class="rp-detail-text">Impact placeholder.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── PUBLICATIONS + AWARDS ─── -->
+<section id="pubs" style="margin-top: 100px;">
+  <div class="section-header">
+    <span class="section-label">Publications</span>
+    <span class="section-count">05 publications</span>
+  </div>
+  <div class="pubs-list">
+
+    <a class="pub-row" href="#">
+      <span class="pub-title">Teaching Design Strategy for Social Impact</span>
+      <span class="pub-source">DRS Conference · Brisbane, Australia</span>
+      <span class="pub-year">2020</span>
+    </a>
+
+    <a class="pub-row" href="#">
+      <span class="pub-title">Mediating Piatt Park</span>
+      <span class="pub-source">DMI · Toronto, Canada</span>
+      <span class="pub-year">2020</span>
+    </a>
+
+    <a class="pub-row" href="#">
+      <span class="pub-title">From Self-Advocacy to Public History</span>
+      <span class="pub-source">DMI · Toronto, Canada</span>
+      <span class="pub-year">2020</span>
+    </a>
+
+    <a class="pub-row" href="#">
+      <span class="pub-title">Curatorial Groupware</span>
+      <span class="pub-source">IASDR · Manchester, UK</span>
+      <span class="pub-year">2019</span>
+    </a>
+
+    <a class="pub-row" href="#">
+      <span class="pub-title">Design Against Gender-Based Violence</span>
+      <span class="pub-source">UN Women · World Design Organization</span>
+      <span class="pub-year">2019</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ─── WRITING ─── -->
+<section id="writing" style="margin-top: 80px;">
+  <div class="section-header">
+    <span class="section-label">Writing</span>
+    <span class="section-count">Medium</span>
+  </div>
+  <div class="writing-grid">
+
+    <a class="writing-card" href="https://writeleft.medium.com/the-making-of-off-limits-gamified-interviewing-733bf889a3d2" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/offlimits/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">The making of Off-Limits: Gamified interviewing</p>
+        <p class="writing-card-year">2019</p>
+      </div>
+    </a>
+
+    <a class="writing-card" href="https://writeleft.medium.com/emancipating-invisibilized-populations-through-design-8e4e90de64e0" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/invisible22/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">Emancipating invisibilized populations through design</p>
+        <p class="writing-card-year">2019</p>
+      </div>
+    </a>
+
+    <a class="writing-card" href="https://writeleft.medium.com/understanding-the-attack-on-planned-parenthood-d54bfe2c6c56" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/plannd88/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">Understanding the attack on Planned Parenthood</p>
+        <p class="writing-card-year">2019</p>
+      </div>
+    </a>
+
+    <a class="writing-card" href="https://writeleft.medium.com/visual-language-of-rape-in-india-575f5fb5b2fe" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/visualang7/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">Visual Language of Rape in India</p>
+        <p class="writing-card-year">2019</p>
+      </div>
+    </a>
+
+    <a class="writing-card" href="https://writeleft.medium.com/what-no-one-shares-about-the-menstrual-cup-2387fd4e5112" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/menstr44/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">What no one shares about the menstrual cup</p>
+        <p class="writing-card-year">2020</p>
+      </div>
+    </a>
+
+    <a class="writing-card" href="https://writeleft.medium.com/self-care-is-the-worst-e831f5694beb" target="_blank">
+      <div class="writing-card-bg" style="background-image:url('https://picsum.photos/seed/selfcare9/600/800')"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">Self-care is the worst.</p>
+        <p class="writing-card-year">2020</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer" id="contact">
+  <div>
+    <p class="footer-lbl">Say hello</p>
+    <a href="mailto:nehamanndesign@gmail.com" class="footer-email">
+      nehamanndesign<br>@gmail.com
+    </a>
+  </div>
+  <div class="footer-right">
+    <a href="#">LinkedIn</a>
+    <a href="#">Read.cv</a>
+    <a href="#">Dribbble</a>
+  </div>
+</footer>
+
+<div class="footer-bar">
+  <span>© 2026 Neha Mann</span>
+  <span>Senior designer · Office, Microsoft</span>
+</div>
+
+<div id="controls">
+  <button class="ctrl-btn" id="btn-duotone">Duotone</button>
+</div>
+
+<div id="edit-bar">
+  <span class="edit-dot"></span>
+  <span>Editing</span>
+  <span class="divider">·</span>
+  <button id="edit-download">Download</button>
+  <span class="divider">·</span>
+  <button id="edit-close">Done · E</button>
+</div>
+
+<script>
+  /* ─── CURSOR ─── */
+  const cur = document.getElementById('cur');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  });
+
+  /* ─── CHALK ─── */
+  const chalkCanvas = document.getElementById('chalk');
+  const ctx = chalkCanvas.getContext('2d');
+  const timerEl = document.getElementById('chalk-timer');
+  let lastX = null, lastY = null;
+
+  // Colors: [r, g, b]
+  const chalkColors = [
+    [255, 255, 250],  // white
+    [255, 220, 60],   // yellow
+    [255, 95, 75],    // red
+    [80, 180, 255],   // blue
+    [90, 230, 150],   // green
+    [255, 140, 210],  // pink
+  ];
+  let colorIdx = 0;
+
+  function getColor(alpha) {
+    const [r,g,b] = chalkColors[colorIdx];
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  // Change color on click
+  document.addEventListener('click', () => {
+    colorIdx = (colorIdx + 1) % chalkColors.length;
+    // flash the cursor to signal color change
+    const [r,g,b] = chalkColors[colorIdx];
+    cur.style.background = `rgb(${r},${g},${b})`;
+  });
+
+  function resizeChalk() {
+    chalkCanvas.width  = window.innerWidth;
+    chalkCanvas.height = window.innerHeight;
+  }
+  resizeChalk();
+  window.addEventListener('resize', resizeChalk);
+
+  // Stardust stamp — sparse, like the Moon Chalk box pattern
+  const bumps = [];
+  (function generateStars() {
+    for (let i = 0; i < 14; i++) {
+      const r = Math.pow(Math.random(), 0.5) * 0.9;
+      const a = Math.random() * Math.PI * 2;
+      const sz = Math.random() < 0.15
+        ? 1.4 + Math.random() * 0.8   // occasional brighter speck
+        : 0.3 + Math.random() * 0.7;  // mostly dust
+      bumps.push([Math.cos(a) * r, Math.sin(a) * r, sz]);
+    }
+  })();
+
+  const STAMP_R   = 20;  // spread radius px
+  const STAMP_GAP = 22;  // px between stamps — wide gap = sparse
+
+  let travelDist = 0;
+  let rollAngle  = 0;
+
+  function stamp(x, y) {
+    bumps.forEach(([bx, by, dotSz]) => {
+      const rx = bx * Math.cos(rollAngle) - by * Math.sin(rollAngle);
+      const ry = bx * Math.sin(rollAngle) + by * Math.cos(rollAngle);
+      const jx = rx * STAMP_R + (Math.random() - 0.5) * 1.5;
+      const jy = ry * STAMP_R + (Math.random() - 0.5) * 1.5;
+      const alpha = 0.5 + Math.random() * 0.45;
+      ctx.beginPath();
+      ctx.ellipse(
+        x + jx, y + jy,
+        dotSz,
+        dotSz * (0.5 + Math.random() * 0.9),
+        Math.random() * Math.PI,
+        0, Math.PI * 2
+      );
+      ctx.fillStyle = getColor(alpha);
+      ctx.fill();
+    });
+  }
+
+  function drawChalk(x, y) {
+    if (lastX === null) { lastX = x; lastY = y; return; }
+
+    const dist  = Math.hypot(x - lastX, y - lastY);
+    const angle = Math.atan2(y - lastY, x - lastX);
+
+    rollAngle  += dist / STAMP_R;
+    travelDist += dist;
+
+    const steps = Math.floor(travelDist / STAMP_GAP);
+    if (steps > 0) {
+      travelDist %= STAMP_GAP;
+      for (let i = 0; i < steps; i++) {
+        const t = (i + 1) / steps;
+        stamp(
+          lastX + (x - lastX) * t,
+          lastY + (y - lastY) * t
+        );
+      }
+    }
+
+    lastX = x;
+    lastY = y;
+  }
+
+  document.addEventListener('mousemove', e => drawChalk(e.clientX, e.clientY));
+  document.addEventListener('mouseleave', () => { lastX = null; lastY = null; });
+
+  /* ─── CHALK TIMER + RESET ─── */
+  const RESET_SECS = 10;
+  let secondsLeft = RESET_SECS;
+
+  function resetChalk() {
+    ctx.clearRect(0, 0, chalkCanvas.width, chalkCanvas.height);
+    secondsLeft = RESET_SECS;
+    timerEl.classList.remove('ending');
+  }
+
+  setInterval(() => {
+    secondsLeft--;
+    const s = secondsLeft < 10 ? '0:0' + secondsLeft : '0:' + secondsLeft;
+    timerEl.textContent = s;
+    if (secondsLeft <= 3) timerEl.classList.add('ending');
+    if (secondsLeft <= 0) resetChalk();
+  }, 1000);
+
+  /* ─── FIT HERO TEXT ─── */
+  function fitLine(el, maxW) {
+    let lo=8, hi=600;
+    while(lo<hi-1){
+      const mid=(lo+hi)>>1;
+      el.style.fontSize=mid+'px';
+      if(el.scrollWidth<=maxW) lo=mid; else hi=mid;
+    }
+    el.style.fontSize=lo+'px';
+  }
+  function fitAll() {
+    const maxW = window.innerWidth - 72;
+    const ids = ['l1','l2','l3'];
+    ids.forEach(id => fitLine(document.getElementById(id), maxW));
+    const min = Math.min(...ids.map(id => parseInt(document.getElementById(id).style.fontSize))) - 10;
+    ids.forEach(id => document.getElementById(id).style.fontSize = min+'px');
+  }
+  document.fonts.ready.then(fitAll);
+  window.addEventListener('resize', fitAll);
+
+  /* ─── COPY TOGGLE ─── */
+  (function () {
+    var btn = document.getElementById('copy-toggle');
+    var nodes = Array.prototype.slice.call(document.querySelectorAll('[data-old]'));
+    var showingOld = false;
+
+    nodes.forEach(function (el) {
+      el.dataset.new = el.textContent;
+    });
+
+    function render() {
+      nodes.forEach(function (el) {
+        el.textContent = showingOld ? el.dataset.old : el.dataset.new;
+      });
+      if (btn) {
+        btn.textContent = showingOld ? 'Old copy · press c' : 'New copy · press c';
+        btn.classList.toggle('is-old', showingOld);
+        btn.setAttribute('aria-pressed', String(showingOld));
+      }
+    }
+
+    function toggle(e) {
+      if (e) e.stopPropagation();
+      showingOld = !showingOld;
+      render();
+    }
+
+    if (btn) btn.addEventListener('click', toggle);
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'c' && e.key !== 'C') return;
+      var active = document.activeElement;
+      var tag = active && active.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (active && active.isContentEditable)) return;
+      toggle();
+    });
+
+    render();
+  })();
+
+  /* ─── EDIT MODE ─── */
+  (function () {
+    const EDITABLE = [
+      '.intro-body', '.role-intro', '.role-company', '.role-date', '.role-title-text',
+      '.rp-title', '.rp-lead', '.rp-detail-text', '.rp-detail-label',
+      '.writing-card-title', '.writing-card-year',
+      '.pub-title', '.pub-source', '.pub-year',
+      '.intro-name', '.intro-role'
+    ];
+
+    let editMode = false;
+    const bar = document.getElementById('edit-bar');
+
+    function getEls() {
+      return EDITABLE.flatMap(sel => [...document.querySelectorAll(sel)]);
+    }
+
+    const STORAGE_KEY = 'neha-index-content';
+
+    function saveToStorage() {
+      const data = {};
+      getEls().forEach((el, i) => { data[i] = el.innerHTML; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadFromStorage() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      getEls().forEach((el, i) => { if (data[i] !== undefined) el.innerHTML = data[i]; });
+    }
+
+    function enterEdit() {
+      editMode = true;
+      document.body.classList.add('edit-mode');
+      getEls().forEach(el => {
+        el.contentEditable = 'true';
+        el.addEventListener('input', saveToStorage);
+      });
+      bar.classList.add('visible');
+    }
+
+    function exitEdit() {
+      editMode = false;
+      document.body.classList.remove('edit-mode');
+      getEls().forEach(el => {
+        el.removeAttribute('contenteditable');
+        el.removeEventListener('input', saveToStorage);
+      });
+      bar.classList.remove('visible');
+    }
+
+    loadFromStorage();
+
+    let fileHandle = null;
+
+    function getHTML() {
+      getEls().forEach(el => el.removeAttribute('contenteditable'));
+      document.body.classList.remove('edit-mode');
+      const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      getEls().forEach(el => { el.contentEditable = 'true'; });
+      document.body.classList.add('edit-mode');
+      return html;
+    }
+
+    function showSaved() {
+      const label = bar.querySelector('span:nth-child(2)');
+      label.textContent = 'Saved ✓';
+      setTimeout(() => { label.textContent = 'Editing'; }, 1800);
+    }
+
+    async function saveFile() {
+      if (!editMode) return;
+      const html = getHTML();
+      if ('showSaveFilePicker' in window) {
+        try {
+          if (!fileHandle) {
+            fileHandle = await window.showSaveFilePicker({
+              suggestedName: 'index-black.html',
+              types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }]
+            });
+          }
+          const writable = await fileHandle.createWritable();
+          await writable.write(html);
+          await writable.close();
+          showSaved();
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+          fallbackDownload(html);
+        }
+      } else {
+        fallbackDownload(html);
+      }
+    }
+
+    function fallbackDownload(html) {
+      const blob = new Blob([html], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'index-black.html';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && editMode) { exitEdit(); return; }
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); saveFile(); return; }
+      if (e.key !== 'e' && e.key !== 'E') return;
+      const active = document.activeElement;
+      if (active && (active.isContentEditable || active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
+      editMode ? exitEdit() : enterEdit();
+    });
+
+    document.getElementById('edit-download').addEventListener('click', saveFile);
+    document.getElementById('edit-close').addEventListener('click', exitEdit);
+
+    document.addEventListener('paste', function (e) {
+      if (!editMode) return;
+      e.preventDefault();
+      const text = e.clipboardData.getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
+  })();
+
+  /* ─── AMP FLOOD + DUOTONE ─── */
+  (function () {
+    // All bold colors to cycle on & hover (normal mode)
+    const COLORS = [
+      '#003049', // Deep Space Blue
+      '#F77F00', // Vivid Tangerine
+      '#D62828', // Flag Red
+      '#232747', // Indigo Drift
+      '#FCBF49', // Sunflower Gold
+      '#E45041', // Fruity Sangria
+      '#F5AF3D', // Lemon Zest
+      '#998731', // Olive
+      '#5FA8C2', // Sky Blue
+      '#CF5527', // Burnt Orange
+      '#7D2027', // Deep Red
+      '#6B0A00', // Crimson
+      '#673C34', // Dark Brown
+    ];
+
+    // Duotone pairs: bg + text circle color
+    const DT_PAIRS = [
+      { bg: '#FAE3B1', text: '#CF5527' },
+      { bg: '#5FA8C2', text: '#7D2027' },
+      { bg: '#998731', text: '#673C34' },
+      { bg: '#CF5527', text: '#FAE3B1' },
+      { bg: '#7D2027', text: '#5FA8C2' },
+      { bg: '#673C34', text: '#998731' },
+    ];
+
+    let colorIdx = 0;
+    let dtIdx = 0;
+    let duotoneOn = false;
+
+    const amp = document.getElementById('amp');
+    const btnDuotone = document.getElementById('btn-duotone');
+
+    function setFlood(bg, text) {
+      document.body.style.backgroundColor = bg;
+      document.documentElement.style.setProperty('--flood-bg', bg);
+      document.documentElement.style.setProperty('--dt', text || '#fff');
+    }
+
+    function clearFlood() {
+      document.body.style.backgroundColor = '#000';
+      document.documentElement.style.setProperty('--flood-bg', '#000');
+      document.documentElement.style.setProperty('--dt', '#fff');
+    }
+
+    if (amp) {
+      amp.addEventListener('mouseenter', function () {
+        if (duotoneOn) {
+          const pair = DT_PAIRS[dtIdx % DT_PAIRS.length];
+          setFlood(pair.bg, pair.text);
+          dtIdx++;
+        } else {
+          setFlood(COLORS[colorIdx % COLORS.length]);
+          colorIdx++;
+        }
+      });
+      amp.addEventListener('mouseleave', clearFlood);
+    }
+
+    if (btnDuotone) {
+      btnDuotone.addEventListener('click', function () {
+        duotoneOn = !duotoneOn;
+        document.body.classList.toggle('duotone', duotoneOn);
+        btnDuotone.classList.toggle('active', duotoneOn);
+        clearFlood();
+        dtIdx = 0;
+      });
+    }
+  })();
+</script>
+</body>
+</html>
