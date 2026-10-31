@@ -1490,8 +1490,6 @@
 
     loadFromStorage();
 
-    let fileHandle = null;
-
     function getHTML() {
       getEls().forEach(el => el.removeAttribute('contenteditable'));
       document.body.classList.remove('edit-mode');
@@ -1503,41 +1501,21 @@
 
     function showSaved() {
       const label = bar.querySelector('span:nth-child(2)');
-      label.textContent = 'Saved ✓';
-      setTimeout(() => { label.textContent = 'Editing'; }, 1800);
+      label.textContent = 'Downloaded ✓  →  drop index.html in your folder, then git push';
+      setTimeout(() => { label.textContent = 'Editing'; }, 4000);
     }
 
-    async function saveFile() {
+    function saveFile() {
       if (!editMode) return;
+      saveToStorage();
       const html = getHTML();
-      if ('showSaveFilePicker' in window) {
-        try {
-          if (!fileHandle) {
-            fileHandle = await window.showSaveFilePicker({
-              suggestedName: 'index-black.html',
-              types: [{ description: 'HTML', accept: { 'text/html': ['.html'] } }]
-            });
-          }
-          const writable = await fileHandle.createWritable();
-          await writable.write(html);
-          await writable.close();
-          showSaved();
-        } catch (err) {
-          if (err.name === 'AbortError') return;
-          fallbackDownload(html);
-        }
-      } else {
-        fallbackDownload(html);
-      }
-    }
-
-    function fallbackDownload(html) {
       const blob = new Blob([html], { type: 'text/html' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'index-black.html';
+      a.download = 'index.html';
       a.click();
       URL.revokeObjectURL(a.href);
+      showSaved();
     }
 
     document.addEventListener('keydown', function (e) {

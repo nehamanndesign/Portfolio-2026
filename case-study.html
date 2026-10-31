@@ -544,18 +544,29 @@
     loadFromStorage();
 
     function downloadHTML() {
-      exitEdit();
+      saveToStorage();
+      // Temporarily strip edit mode to capture clean HTML
+      getEls().forEach(el => el.removeAttribute('contenteditable'));
+      document.body.classList.remove('edit-mode');
       const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      getEls().forEach(el => { el.contentEditable = 'true'; });
+      document.body.classList.add('edit-mode');
+      // Download
       const blob = new Blob([html], { type: 'text/html' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = 'case-study.html';
       a.click();
       URL.revokeObjectURL(a.href);
+      // Confirm
+      const label = bar.querySelector('span:nth-child(2)');
+      label.textContent = 'Downloaded ✓  →  drop case-study.html in your folder, then git push';
+      setTimeout(() => { label.textContent = 'Editing'; }, 4000);
     }
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && editMode) { exitEdit(); return; }
+      if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); downloadHTML(); return; }
       if (e.key !== 'e' && e.key !== 'E') return;
       const active = document.activeElement;
       if (active && (active.isContentEditable || active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
