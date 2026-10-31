@@ -471,7 +471,7 @@
   <span class="divider">·</span>
   <button id="edit-download">Download</button>
   <span class="divider">·</span>
-  <button id="edit-close">Done · E</button>
+  <button id="edit-close">Done · Esc</button>
 </div>
 
 <!-- ─── FOOTER ─── -->
@@ -559,7 +559,7 @@
       if (e.key !== 'e' && e.key !== 'E') return;
       const active = document.activeElement;
       if (active && (active.isContentEditable || active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
-      editMode ? exitEdit() : enterEdit();
+      if (!editMode) enterEdit();
     });
 
     document.getElementById('edit-download').addEventListener('click', downloadHTML);
