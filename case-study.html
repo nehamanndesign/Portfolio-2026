@@ -6,6 +6,8 @@
   <title>Case Study — Neha Mann</title>
   <link href="./case-study_files/css2" rel="stylesheet">
   <link href="./case-study_files/css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -20,17 +22,21 @@
     body {
       background: #fff;
       color: var(--text);
-      font-family: 'Share Tech Mono', monospace;
+      font-family: 'DM Sans', sans-serif;
       overflow-x: hidden;
       cursor: none;
     }
 
     #cur {
-      position: fixed; width: 6px; height: 6px;
-      background: #0a0a0a; border-radius: 50%;
+      position: fixed; width: 72px; height: 72px;
+      background: transparent;
+      border: 6px solid #003FE4;
+      border-radius: 50%;
       pointer-events: none; z-index: 201;
       transform: translate(-50%,-50%);
+      transition: border-color 0.15s, background 0.1s;
     }
+    #cur.pressed { background: #E5332A; }
 
     /* ─── NAV ─── */
     nav {
@@ -71,11 +77,12 @@
       overflow: hidden;
       background: #f0f0f0;
     }
-    .cs-hero-img img {
+    .cs-hero-img img, .cs-hero-img video {
       width: 100%; height: 100%;
       object-fit: cover; display: block;
-      filter: grayscale(20%);
     }
+    .cs-hero-img img { filter: grayscale(20%); }
+    .cs-hero-img video::-webkit-media-controls { display: none !important; }
     /* placeholder if no image */
     .cs-hero-img-placeholder {
       width: 100%; height: 100%; min-height: calc(100vh - 61px);
@@ -102,12 +109,12 @@
     }
 
     .cs-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
+      font-family: 'Syne', sans-serif;
       font-style: normal;
-      font-weight: 800;
+      font-weight: 700;
       font-size: clamp(38px, 5vw, 80px);
-      line-height: 0.9;
-      letter-spacing: -0.03em;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
       color: var(--text);
       margin-bottom: 48px;
     }
@@ -127,6 +134,17 @@
     .cs-meta-value {
       font-size: 11px; letter-spacing: 0.04em; color: var(--text);
     }
+    .cs-product-list {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px;
+    }
+    .cs-product-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10px; letter-spacing: 0.02em;
+      background: #f2f2f2; border-radius: 20px;
+      padding: 4px 10px 4px 6px;
+      color: var(--text);
+    }
+    .cs-product-pill img { display: block; flex-shrink: 0; }
 
     /* ─── BODY ─── */
     .cs-body {
@@ -137,9 +155,9 @@
 
     /* lead paragraph */
     .cs-lead {
-      font-family: 'Bricolage Grotesque', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 500;
       font-size: clamp(20px, 2.4vw, 32px);
       line-height: 1.3;
       letter-spacing: -0.02em;
@@ -159,7 +177,7 @@
 
     /* body copy */
     .cs-p {
-      font-family: 'Uncut Sans', sans-serif;
+      font-family: 'DM Sans', sans-serif;
       font-weight: 400;
       font-size: clamp(15px, 1.4vw, 18px);
       line-height: 1.7;
@@ -191,7 +209,7 @@
       color: var(--dim);
     }
 
-    /* ─── FULL-BLEED IMAGE ─── */
+    /* ─── FULL-BLEED IMAGE / VIDEO / GIF ─── */
     .cs-img-full {
       width: 100%;
       margin: 80px 0;
@@ -206,6 +224,35 @@
       width: 100%; aspect-ratio: 16/7;
       background: #f0f0f0;
       display: flex; align-items: center; justify-content: center;
+    }
+    /* video full-bleed */
+    .cs-video-full {
+      position: relative;
+      width: 100%; margin: 80px 0; overflow: hidden; background: transparent;
+      line-height: 0;
+    }
+    .cs-video-full video {
+      display: block;
+      width: calc(100% + 4px);
+      margin: -2px;
+      border: none !important; outline: none !important;
+      box-shadow: none !important;
+    }
+    .cs-video-full video::-webkit-media-controls { display: none !important; }
+    .cs-video-full video::-webkit-media-controls-enclosure { display: none !important; }
+    /* gif full-bleed */
+    .cs-gif-full {
+      margin: 80px auto;
+      width: 78%;
+      overflow: hidden; background: transparent;
+      cursor: pointer; line-height: 0;
+    }
+    .cs-gif-full img {
+      display: block;
+      width: calc(100% + 4px);
+      margin: -2px !important;
+      border: none !important; outline: none !important;
+      box-shadow: none !important;
     }
     .cs-img-caption {
       font-size: 8px; letter-spacing: 0.2em;
@@ -243,6 +290,139 @@
       overflow: hidden;
     }
     .cs-img-2col-item img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ─── SECTION HEADER ─── */
+    .cs-section-header {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 100px 36px 0;
+    }
+    .cs-section-num {
+      font-size: 8px; letter-spacing: 0.5em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 16px; display: block;
+    }
+    .cs-section-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: clamp(28px, 3.5vw, 52px);
+      letter-spacing: -0.01em; line-height: 1.15;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+
+    /* ─── TYPE COLUMNS (Section 2) ─── */
+    .cs-type-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 40px;
+      max-width: 1100px;
+      margin: 60px auto 0;
+      padding: 0 48px;
+    }
+    .cs-type-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .cs-type-img-slot {
+      aspect-ratio: 4/3;
+      background: #fff;
+      border-radius: 6px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .cs-type-img-slot img {
+      width: 100%; height: 100%;
+      object-fit: contain; display: block;
+    }
+    .cs-type-tag {
+      font-size: 8px; letter-spacing: 0.45em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 12px; display: block;
+    }
+    .cs-type-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(16px, 1.6vw, 22px);
+      letter-spacing: -0.025em; line-height: 1.1;
+      color: var(--text); margin-bottom: 14px;
+    }
+
+    /* ─── 2-COL TEXT GRID (Section 3) ─── */
+    .cs-subsection-label {
+      font-size: 8px; letter-spacing: 0.45em; text-transform: uppercase;
+      color: var(--dim); display: block;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule);
+      margin-bottom: 28px; margin-top: 64px;
+    }
+    .cs-text-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+    .cs-text-3col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+    .cs-grid-img-slot {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: #f0f0f0;
+      border-radius: 4px;
+    }
+    .cs-grid-img-slot img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .cs-text-col-label {
+      font-size: 8px; letter-spacing: 0.35em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 14px; display: block;
+    }
+    .cs-text-col-heading {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 700;
+      font-size: clamp(16px, 1.6vw, 22px);
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--text); margin-bottom: 14px;
+    }
+
+    /* ─── NOTIFY GRID (Section 4) ─── */
+    .cs-notify-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      margin: 60px 0 0;
+    }
+    .cs-notify-item {
+      padding: 48px 40px 56px;
+      background: #fafafa;
+    }
+    .cs-notify-gif-slot {
+      background: #efefef;
+      aspect-ratio: 4/3;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+    .cs-notify-gif-slot img, .cs-notify-gif-slot video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .cs-notify-tag {
+      font-size: 8px; letter-spacing: 0.45em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 10px; display: block;
+    }
+    .cs-notify-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(18px, 1.8vw, 24px);
+      letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--text); margin-bottom: 14px;
+    }
 
     /* ─── MORE WORK ─── */
     .more-work {
@@ -345,102 +525,221 @@
 <div id="cur" style="left: 917px; top: 552px;"></div>
 
 <nav>
-  <a href="file:///Users/nehaalex/Claude/Projects/Neha%20Portfolio%202026/index.html" class="nav-name">Neha Mann</a>
+  <a href="index.html" class="nav-name">Neha Mann</a>
   <div class="nav-links">
-    <a href="file:///Users/nehaalex/Claude/Projects/Neha%20Portfolio%202026/index.html#work" class="nav-back">← All work</a>
+    <a href="index.html#work" class="nav-back">← All work</a>
   </div>
 </nav>
 
 <!-- ─── HERO ─── -->
 <section class="cs-hero">
   <div class="cs-hero-img">
-    <div class="cs-hero-img-placeholder">
-      <span class="placeholder-num">01</span>
-    </div>
-    <!-- swap above div for: <img src="your-hero-image.jpg" alt=""> -->
+    <video src="cover-parallel-work.mp4" autoplay muted loop playsinline preload="auto"
+      style="width:100%;height:100%;object-fit:cover;display:block;"
+      disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback"></video>
   </div>
   <div class="cs-hero-text">
-    <p class="cs-category">Microsoft · Product Design · 2025</p>
-    <h1 class="cs-title">Parallel work</h1>
+    <p class="cs-category">Microsoft · Product Design · 2026</p>
+    <h1 class="cs-title">Parallel Work</h1>
     <div class="cs-meta-grid">
       <div class="cs-meta-item">
         <span class="cs-meta-label">Role</span>
-        <span class="cs-meta-value">Senior Product Designer</span>
+        <span class="cs-meta-value">Lead Designer</span>
       </div>
       <div class="cs-meta-item">
-        <span class="cs-meta-label">Platform</span>
-        <span class="cs-meta-value">Microsoft 365</span>
+        <span class="cs-meta-label">Year</span>
+        <span class="cs-meta-value">2026</span>
       </div>
-      <div class="cs-meta-item">
-        <span class="cs-meta-label">Timeline</span>
-        <span class="cs-meta-value">6 months</span>
-      </div>
-      <div class="cs-meta-item">
-        <span class="cs-meta-label">Team</span>
-        <span class="cs-meta-value">Office AI</span>
+      <div class="cs-meta-item cs-meta-item--product">
+        <span class="cs-meta-label">Product</span>
+        <span class="cs-meta-value cs-product-list">
+          <span class="cs-product-pill">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Microsoft_Office_Word_%282019%E2%80%93present%29.svg" alt="Word" width="16" height="16">
+            Word
+          </span>
+          <span class="cs-product-pill">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/34/Microsoft_Office_Excel_%282019%E2%80%93present%29.svg" alt="Excel" width="16" height="16">
+            Excel
+          </span>
+          <span class="cs-product-pill">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Microsoft_Office_PowerPoint_%282019%E2%80%93present%29.svg" alt="PowerPoint" width="16" height="16">
+            PowerPoint
+          </span>
+          <span class="cs-product-pill">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg" alt="Outlook" width="16" height="16">
+            Outlook
+          </span>
+        </span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── BODY ─── -->
-<div class="cs-body">
-
+<!-- ══════════════════════════════════════════
+     01 — INTRO TO PARALLEL WORK
+══════════════════════════════════════════ -->
+<div class="cs-section-header">
+  <span class="cs-section-num">01</span>
+  <h2 class="cs-section-title">The Challenge</h2>
   <p class="cs-lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question. The challenge is enabling all of that without disturbing the progress that's already been made.</p>
-
-  <p class="cs-h2">The problem</p>
-  <p class="cs-p">nothing nothing</p>
-  <p class="cs-p">You can add more paragraphs by duplicating this element. Keep each paragraph focused on a single idea.</p>
-
 </div>
 
-<!-- full-bleed image -->
-<div class="cs-img-full">
-  <div class="cs-img-full-placeholder"></div>
-  <!-- swap above div for: <img src="your-image.jpg" alt=""> -->
+<div class="cs-body" style="padding-top: 40px;">
+  <p class="cs-p">Add your intro text here. What is parallel work? Why does it matter? Set the stage for what's coming.</p>
+  <p class="cs-p">A second paragraph if needed. Keep it tight — this is the hook.</p>
 </div>
-<p class="cs-img-caption">Caption — describe what's shown in the image above.</p>
 
-<div class="cs-body">
+<!-- full-bleed video -->
+<div class="cs-video-full" id="hero-video-wrap">
+  <video id="hero-video" src="Hero.mp4" muted loop playsinline preload="auto" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback"></video>
+</div>
+<p class="cs-img-caption">Parallel Work — hero interaction</p>
 
-  <p class="cs-h2">Approach</p>
-  <p class="cs-p">How did you approach the problem? What research, frameworks, or constraints shaped the direction? This is where you show your thinking, not just your output.</p>
 
-  <!-- wide image -->
-  <div class="cs-img-wide">
-    <div class="cs-img-wide-placeholder"></div>
-    <!-- swap for: <img src="your-image.jpg" alt=""> -->
+<!-- ══════════════════════════════════════════
+     02 — TYPES OF PARALLEL WORK
+══════════════════════════════════════════ -->
+<div class="cs-section-header" style="padding-top: 120px;">
+  <span class="cs-section-num">02</span>
+  <h2 class="cs-section-title">Types of Parallel Work</h2>
+  <p class="cs-p" style="margin-bottom:0;">Drop in the description of how you categorised the types. One or two sentences is enough before the rows.</p>
+</div>
+
+<div class="cs-type-cols">
+
+  <div class="cs-type-col">
+    <div class="cs-type-img-slot">
+      <img src="cs-type-steering.png" alt="Steering">
+    </div>
+    <span class="cs-type-tag">Type 01</span>
+    <p class="cs-type-name">Steering</p>
+    <p class="cs-p" style="margin-bottom:0;">Describe this type. What triggers it? What does the user experience?</p>
   </div>
 
-  <p class="cs-p">Continue the narrative here. Walk through the key design decisions and why you made them. Be specific — vague language loses the reader.</p>
-
-  <!-- pull quote -->
-  <div class="cs-quote">
-    <p>As Copilot becomes more proactive and asynchronous, more experiences are competing for our attention. Our job is to orchestrate how multiple features gracefully seek the user's attention.</p>
-    <cite>Key insight</cite>
+  <div class="cs-type-col">
+    <div class="cs-type-img-slot">
+      <img src="cs-type-sidebar.png" alt="Sidebar">
+    </div>
+    <span class="cs-type-tag">Type 02</span>
+    <p class="cs-type-name">Sidebar</p>
+    <p class="cs-p" style="margin-bottom:0;">Describe this type. What triggers it? What does the user experience?</p>
   </div>
 
-  <p class="cs-h2">The design</p>
-  <p class="cs-p">Describe what you built. What interactions, flows, or systems did you design? What makes this solution different from the obvious answer?</p>
-
-</div>
-
-<!-- 2-col images -->
-<div class="cs-body" style="padding-bottom: 0; padding-top: 0;">
-  <div class="cs-img-2col">
-    <div class="cs-img-2col-item"></div>
-    <div class="cs-img-2col-item"></div>
+  <div class="cs-type-col">
+    <div class="cs-type-img-slot">
+      <img src="cs-type-queued.png" alt="Queued">
+    </div>
+    <span class="cs-type-tag">Type 03</span>
+    <p class="cs-type-name">Queued</p>
+    <p class="cs-p" style="margin-bottom:0;">Describe this type. What triggers it? What does the user experience?</p>
   </div>
-</div>
-
-<div class="cs-body">
-
-  <p class="cs-p">More detail about the final solution. How does it work? What does the user experience?</p>
-
-  <p class="cs-h2">Outcome</p>
-  <p class="cs-p">What happened after launch? Metrics, qualitative feedback, what you'd do differently. Be honest — real reflections are more interesting than polished spin.</p>
 
 </div>
+
+
+<!-- ══════════════════════════════════════════
+     03 — WHAT DO USERS SAY?
+══════════════════════════════════════════ -->
+<div class="cs-section-header" style="padding-top: 120px;">
+  <span class="cs-section-num">03</span>
+  <h2 class="cs-section-title">What Do Users Say?</h2>
+  <p class="cs-p" style="margin-bottom:0;">Brief framing of the research. How did you gather this? What surprised you?</p>
+</div>
+
+<div class="cs-body" style="padding-top: 48px;">
+
+  <span class="cs-subsection-label">Manual vs autonomous</span>
+  <div class="cs-text-2col">
+    <div>
+      <div class="cs-grid-img-slot">
+        <img src="cs-auto-manual.png" alt="Autonomous mode" style="object-position: 25% center;">
+      </div>
+      <span class="cs-text-col-label" style="margin-top:20px;">A — Autonomous</span>
+      <p class="cs-text-col-heading">Heading or finding</p>
+      <p class="cs-p" style="margin-bottom:0;">What users said or felt about autonomous control. A quote, a pattern, a moment of delight or friction.</p>
+    </div>
+    <div>
+      <div class="cs-grid-img-slot">
+        <img src="cs-auto-manual.png" alt="Manual mode" style="object-position: 75% center;">
+      </div>
+      <span class="cs-text-col-label" style="margin-top:20px;">B — Manual</span>
+      <p class="cs-text-col-heading">Heading or finding</p>
+      <p class="cs-p" style="margin-bottom:0;">What users said or felt about manual control. The contrast with the left column — what they preferred and when.</p>
+    </div>
+  </div>
+
+  <span class="cs-subsection-label">Types of controls</span>
+  <div class="cs-text-3col">
+    <div>
+      <div class="cs-grid-img-slot">
+        <img src="cs-controls.png" alt="Modify by default" style="object-position: 17% center;">
+      </div>
+      <span class="cs-text-col-label" style="margin-top:20px;">A — Modify by default</span>
+      <p class="cs-text-col-heading">Heading or finding</p>
+      <p class="cs-p" style="margin-bottom:0;">Describe what this control type means and what users thought of it.</p>
+    </div>
+    <div>
+      <div class="cs-grid-img-slot">
+        <img src="cs-controls.png" alt="Manual modify" style="object-position: 50% center;">
+      </div>
+      <span class="cs-text-col-label" style="margin-top:20px;">B — Manual modify</span>
+      <p class="cs-text-col-heading">Heading or finding</p>
+      <p class="cs-p" style="margin-bottom:0;">Describe what this control type means and what users thought of it.</p>
+    </div>
+    <div>
+      <div class="cs-grid-img-slot">
+        <img src="cs-controls.png" alt="Queue by default" style="object-position: 83% center;">
+      </div>
+      <span class="cs-text-col-label" style="margin-top:20px;">C — Queue by default</span>
+      <p class="cs-text-col-heading">Heading or finding</p>
+      <p class="cs-p" style="margin-bottom:0;">Describe what this control type means and what users thought of it.</p>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     04 — HOW DO WE NOTIFY?
+══════════════════════════════════════════ -->
+<div class="cs-section-header" style="padding-top: 120px;">
+  <span class="cs-section-num">04</span>
+  <h2 class="cs-section-title">How Do We Notify?</h2>
+  <p class="cs-p" style="margin-bottom:0;">Intro to the notification system. What was the design challenge? What principles guided it?</p>
+</div>
+
+<div class="cs-notify-grid">
+
+  <div class="cs-notify-item">
+    <div class="cs-notify-gif-slot">
+      <!-- swap for: <img src="notify-1.gif" alt=""> -->
+    </div>
+    <span class="cs-notify-tag">Type 01</span>
+    <p class="cs-notify-name">Notification type name</p>
+    <p class="cs-p" style="margin-bottom:0;">When does this fire? What's the user's context? Keep the description short and concrete.</p>
+  </div>
+
+  <div class="cs-notify-item">
+    <div class="cs-notify-gif-slot">
+      <!-- swap for: <img src="notify-2.gif" alt=""> -->
+    </div>
+    <span class="cs-notify-tag">Type 02</span>
+    <p class="cs-notify-name">Notification type name</p>
+    <p class="cs-p" style="margin-bottom:0;">When does this fire? What's the user's context? Keep the description short and concrete.</p>
+  </div>
+
+  <div class="cs-notify-item">
+    <div class="cs-notify-gif-slot">
+      <!-- swap for: <img src="notify-3.gif" alt=""> -->
+    </div>
+    <span class="cs-notify-tag">Type 03</span>
+    <p class="cs-notify-name">Notification type name</p>
+    <p class="cs-p" style="margin-bottom:0;">When does this fire? What's the user's context? Keep the description short and concrete.</p>
+  </div>
+
+</div>
+
+<div style="margin-bottom: 120px;"></div>
 
 <!-- ─── MORE WORK ─── -->
 <section class="more-work">
@@ -490,6 +789,45 @@
     cur.style.left = e.clientX + 'px';
     cur.style.top  = e.clientY + 'px';
   });
+  document.addEventListener('mousedown', () => cur.classList.add('pressed'));
+  document.addEventListener('mouseup',   () => cur.classList.remove('pressed'));
+
+
+  /* ─── VIDEO: play on hover ─── */
+  (function () {
+    const wrap = document.getElementById('hero-video-wrap');
+    const video = document.getElementById('hero-video');
+    if (!video || !wrap) return;
+    wrap.addEventListener('mouseenter', () => video.play().catch(() => {}), { once: true });
+  })();
+
+  /* ─── GIF: load + start when in view, replay on hover ─── */
+  (function () {
+    const img  = document.getElementById('hero-gif');
+    const wrap = document.getElementById('hero-gif-wrap');
+    if (!img || !wrap) return;
+    const src = img.dataset.src;
+    let loaded = false;
+
+    function reloadGif() {
+      img.src = '';
+      requestAnimationFrame(() => { img.src = src + '?t=' + Date.now(); });
+    }
+
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !loaded) {
+          img.src = src;
+          loaded = true;
+        }
+      });
+    }, { threshold: 0.2 });
+    obs.observe(wrap);
+
+    wrap.addEventListener('mouseenter', () => {
+      if (loaded) reloadGif();
+    });
+  })();
 
   /* ─── EDIT MODE ─── */
   (function () {

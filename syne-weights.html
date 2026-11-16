@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Syne 600 & 700 — Sentence Case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; color: #0a0a0a; padding: 64px 48px; font-family: sans-serif; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3px;
+  }
+
+  .card {
+    background: #fafafa;
+    padding: 48px 40px 56px;
+  }
+
+  .card-label {
+    font-family: monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #aaa;
+    margin-bottom: 32px;
+  }
+
+  .card-num {
+    font-family: monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: #bbb;
+    margin-bottom: 10px;
+  }
+
+  .heading {
+    font-family: 'Syne', sans-serif;
+    line-height: 1.08;
+    color: #0a0a0a;
+    margin-bottom: 20px;
+    font-size: clamp(28px, 3vw, 44px);
+  }
+
+  .lead {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #555;
+    max-width: 420px;
+  }
+</style>
+</head>
+<body>
+
+<div class="grid">
+
+  <div class="card">
+    <p class="card-label">Syne 600 · Sentence case</p>
+    <p class="card-num">01</p>
+    <div class="heading" style="font-weight:600">Intro to parallel work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question. The challenge is enabling all of that without disturbing the progress that's already been made.</p>
+  </div>
+
+  <div class="card">
+    <p class="card-label">Syne 700 · Sentence case</p>
+    <p class="card-num">01</p>
+    <div class="heading" style="font-weight:700">Intro to parallel work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question. The challenge is enabling all of that without disturbing the progress that's already been made.</p>
+  </div>
+
+  <div class="card" style="background:#0a0a0a">
+    <p class="card-label" style="color:#555">Syne 600 · Dark</p>
+    <p class="card-num" style="color:#444">01</p>
+    <div class="heading" style="font-weight:600; color:#fff">Intro to parallel work</div>
+    <p class="lead" style="color:#666">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question. The challenge is enabling all of that without disturbing the progress that's already been made.</p>
+  </div>
+
+  <div class="card" style="background:#0a0a0a">
+    <p class="card-label" style="color:#555">Syne 700 · Dark</p>
+    <p class="card-num" style="color:#444">01</p>
+    <div class="heading" style="font-weight:700; color:#fff">Intro to parallel work</div>
+    <p class="lead" style="color:#666">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question. The challenge is enabling all of that without disturbing the progress that's already been made.</p>
+  </div>
+
+</div>
+
+</body>
+</html>

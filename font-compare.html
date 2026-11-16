@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Comparison — Parallel Work Intro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Syne:wght@800&family=Montserrat:wght@800&family=Josefin+Sans:wght@700&family=Raleway:wght@800&family=Barlow:wght@800&family=Big+Shoulders+Display:wght@800&family=Urbanist:wght@800&family=Oxanium:wght@800&family=Unbounded:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #f4f4f4; font-family: sans-serif; padding: 48px 32px; }
+  h1 { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #999; margin-bottom: 40px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+
+  .card {
+    background: #fff;
+    padding: 40px 36px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .font-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+
+  .heading {
+    font-size: clamp(28px, 3vw, 42px);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    line-height: 1.05;
+    color: #0a0a0a;
+  }
+
+  .lead {
+    font-size: 15px;
+    line-height: 1.65;
+    color: #444;
+    font-family: sans-serif;
+    font-weight: 400;
+    max-width: 420px;
+  }
+
+  /* ── fonts ── */
+  .f-space    { font-family: 'Space Grotesk', sans-serif; }
+  .f-syne     { font-family: 'Syne', sans-serif; }
+  .f-mont     { font-family: 'Montserrat', sans-serif; }
+  .f-josefin  { font-family: 'Josefin Sans', sans-serif; }
+  .f-raleway  { font-family: 'Raleway', sans-serif; }
+  .f-barlow   { font-family: 'Barlow', sans-serif; }
+  .f-bsd      { font-family: 'Big Shoulders Display', sans-serif; }
+  .f-urban    { font-family: 'Urbanist', sans-serif; }
+  .f-oxanium  { font-family: 'Oxanium', sans-serif; }
+  .f-unbounded { font-family: 'Unbounded', sans-serif; font-size: clamp(20px, 2.2vw, 32px); }
+</style>
+</head>
+<body>
+
+<h1>Font comparison — Intro to Parallel Work heading</h1>
+
+<div class="grid">
+
+  <div class="card">
+    <span class="font-label">Space Grotesk</span>
+    <div class="heading f-space">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Syne</span>
+    <div class="heading f-syne">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Montserrat</span>
+    <div class="heading f-mont">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Josefin Sans</span>
+    <div class="heading f-josefin">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Raleway</span>
+    <div class="heading f-raleway">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Barlow</span>
+    <div class="heading f-barlow">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Big Shoulders Display</span>
+    <div class="heading f-bsd">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Urbanist</span>
+    <div class="heading f-urban">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+  <div class="card">
+    <span class="font-label">Unbounded</span>
+    <div class="heading f-unbounded">Intro to Parallel Work</div>
+    <p class="lead">As we hand off harder work to AI, people still need to be unblocked — to type what's in their head, steer a running prompt, ask a quick question.</p>
+  </div>
+
+</div>
+</body>
+</html>

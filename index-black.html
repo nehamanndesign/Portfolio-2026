@@ -25,25 +25,9 @@
       transition: background-color 0.45s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
-    /* ─── CHALK CANVAS ─── */
-    #chalk {
-      position: fixed; inset: 0;
-      width: 100vw; height: 100vh;
-      pointer-events: none;
-      z-index: 1;
-    }
 
-    /* ─── CHALK TIMER ─── */
-    #chalk-timer {
-      position: fixed; top: 62px; left: 36px;
-      z-index: 300;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 9px; letter-spacing: 0.2em;
-      color: rgba(255,255,255,0.25);
-      pointer-events: none;
-      transition: color 0.3s;
-    }
-    #chalk-timer.ending { color: rgba(255,255,255,0.7); }
+
+
 
     /* ─── CURSOR ─── */
     #cur {
@@ -80,6 +64,35 @@
       padding: 56px 36px 44px;
       overflow: hidden;
     }
+
+    /* ─── CURSOR RED ON TEXT ─── */
+    #cur { transition: background 0.2s; }
+
+
+    /* ─── LASSO SELECTION ─── */
+    #lasso-sel {
+      position: fixed; display: none;
+      border: 1px solid rgba(255,95,75,0.7);
+      background: rgba(255,95,75,0.04);
+      pointer-events: none; z-index: 500;
+    }
+
+    /* ─── HERO ZOOM ─── */
+    .hero {
+      transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* ─── HIDDEN TEXT ─── */
+    .secret {
+      position: absolute;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 10px; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.0);
+      pointer-events: none; user-select: none;
+      white-space: nowrap; z-index: 2;
+      transition: color 0.5s;
+    }
+    body.zoomed-deep .secret { color: rgba(255,255,255,0.65); }
 
     .hero-text {
       position: relative; z-index: 1;
@@ -159,12 +172,13 @@
     .intro-role {
       font-family: 'Uncut Sans', sans-serif;
       font-weight: 700;
-      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--dim); line-height: 2;
+      font-size: clamp(14px, 1.4vw, 20px); letter-spacing: 0.04em;
+      color: var(--dim); line-height: 1.5;
+      margin-top: 14px;
     }
 
     .intro-right {
-      display: flex; flex-direction: column; justify-content: flex-end;
+      display: flex; flex-direction: column; justify-content: flex-start;
     }
 
     .intro-body {
@@ -172,8 +186,27 @@
       font-weight: 400;
       font-size: clamp(15px, 1.5vw, 19px);
       line-height: 1.65;
-      color: rgba(255,255,255,0.6);
+      color: #fff;
+      margin-bottom: 0;
     }
+
+    .intro-links {
+      font-family: 'Uncut Sans', sans-serif;
+      font-size: clamp(12px, 1.1vw, 15px);
+      color: var(--dim);
+    }
+
+    .intro-link {
+      color: var(--dim);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(136,136,136,0.35);
+      cursor: none;
+      transition: color 0.2s, text-decoration-color 0.2s;
+    }
+    .intro-link:hover { color: #fff; text-decoration-color: rgba(255,255,255,0.4); }
+
+    .intro-link-sep { color: var(--dim); }
 
     /* ─── SECTION LABEL ─── */
     .section-header {
@@ -189,6 +222,97 @@
     .section-count {
       font-size: 11px; letter-spacing: 0.2em; color: var(--dim);
     }
+
+    /* ─── SCATTERED PROJECT LAYOUT ─── */
+    .proj-scatter {
+      position: relative;
+      padding: 60px 36px 140px;
+    }
+
+    .proj-scatter-word {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-weight: 800;
+      font-size: clamp(100px, 16vw, 220px);
+      letter-spacing: -0.04em; line-height: 0.88;
+      color: #fff;
+      pointer-events: none;
+      user-select: none;
+      position: absolute;
+      top: 40px; left: 36px;
+    }
+
+    .ps-item {
+      position: relative;
+      cursor: none;
+    }
+    .ps-item[data-href] { cursor: none; }
+
+    /* scatter positions */
+    .ps-item--1 { width: 44%; margin-left: 48%; }
+    .ps-item--2 { width: 58%; margin-left: 0;   margin-top: 60px; }
+    .ps-item--3 { width: 30%; margin-left: 64%;  margin-top: -120px; }
+    .ps-item--4 { width: 50%; margin-left: 18%;  margin-top: 80px; }
+    .ps-item--5 { width: 66%; margin-left: 17%;  margin-top: 80px; }
+
+    .ps-img {
+      overflow: hidden; background: #080808;
+      display: block;
+    }
+
+    /* varying aspect ratios for visual rhythm */
+    .ps-item--1 .ps-img { aspect-ratio: 4/3; }
+    .ps-item--2 .ps-img { aspect-ratio: 16/10; }
+    .ps-item--3 .ps-img { aspect-ratio: 3/4; }
+    .ps-item--4 .ps-img { aspect-ratio: 16/9; }
+    .ps-item--5 .ps-img { aspect-ratio: 21/9; }
+
+    .ps-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      filter: grayscale(100%) contrast(1.05);
+      mix-blend-mode: screen;
+      opacity: 0.6;
+      transition: opacity 0.5s, filter 0.6s, transform 0.8s cubic-bezier(0.25,1,0.5,1);
+    }
+    .ps-item:hover .ps-img img {
+      opacity: 0.88;
+      filter: grayscale(10%) contrast(1.05);
+      transform: scale(1.03);
+    }
+
+    .ps-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 14px 0 0;
+      gap: 16px;
+    }
+
+    .ps-num {
+      font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--dim); margin-bottom: 6px;
+    }
+
+    .ps-title {
+      font-family: 'Uncut Sans', sans-serif; font-weight: 700;
+      font-size: clamp(16px, 1.8vw, 24px);
+      letter-spacing: -0.02em; color: #fff;
+      transition: opacity 0.2s; cursor: none;
+    }
+    .ps-item:hover .ps-title { opacity: 0.5; }
+
+    .ps-era {
+      font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--dim); margin-top: 6px;
+    }
+
+    .ps-link {
+      font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--dim); text-decoration: none; cursor: none;
+      white-space: nowrap; flex-shrink: 0;
+      transition: color 0.2s;
+    }
+    .ps-link:hover { color: #fff; }
 
     /* ─── ROLE BLOCKS ─── */
     .role-block {
@@ -819,18 +943,7 @@
       background: rgba(255,255,255,0.07);
     }
 
-    /* ─── COPY TOGGLE ─── */
-    #copy-toggle {
-      position: fixed; bottom: 24px; left: 36px; z-index: 250;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      background: transparent; border: 1px solid var(--rule);
-      padding: 10px 14px; cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    #copy-toggle:hover { color: #fff; border-color: rgba(255,255,255,0.35); }
-    #copy-toggle.is-old { color: rgba(255,220,60,0.8); border-color: rgba(255,220,60,0.4); }
+
   
     /* ─── AMP + PAGE FLOOD ─── */
     .amp { cursor: none; }
@@ -870,10 +983,8 @@
 </head>
 <body>
 
-<canvas id="chalk"></canvas>
-<div id="chalk-timer">0:10</div>
 <div id="cur"></div>
-<button id="copy-toggle" type="button" aria-pressed="false">New copy · press c</button>
+<div id="lasso-sel"></div>
 
 
 
@@ -881,34 +992,32 @@
   <a href="#top" class="nav-name">Neha Mann</a>
   <div class="nav-links">
     <a href="#work" class="nav-link">Work</a>
-    <a href="#pubs" class="nav-link">Writing</a>
-    <a href="#contact" class="nav-link">Info</a>
+    <a href="#contact" class="nav-link">About</a>
   </div>
 </nav>
 
 <!-- ─── HERO ─── -->
 <section class="hero" id="top">
+  <span class="secret" style="top:18%;left:4%">you have a good eye.</span>
+  <span class="secret" style="top:52%;right:5%;text-align:right">made between midnight and 3am.</span>
+  <span class="secret" style="bottom:12%;left:48%">✦ neha mann · 2026</span>
+  <span class="secret" style="top:38%;left:28%;font-size:8px;letter-spacing:0.4em">HI THERE</span>
   <div class="hero-text">
     <span class="hero-line" id="l1">Imagination</span>
     <span class="hero-line" id="l2">is <span id="alive">alive</span> <span class="amp" id="amp">&amp;</span></span>
     <span class="hero-line" id="l3"><span id="well">well</span><span class="sq"></span></span>
   </div>
-  <div class="hero-footer">
-    <span>Neha Mann</span>
-    <span>Senior Designer</span>
-    <span>Office, Microsoft</span>
-  </div>
+  <div class="hero-footer"></div>
 </section>
 
 <!-- ─── INTRO ─── -->
 <section class="intro">
   <div class="intro-left">
-    <p class="intro-label">About</p>
     <p class="intro-name">Neha Mann</p>
-    <p class="intro-role">Senior Product Designer<br>Office · Microsoft</p>
+    <p class="intro-role">Senior Product Designer<br>Microsoft</p>
   </div>
   <div class="intro-right">
-    <p class="intro-body">I've spent the last decade designing software people love and rely on for their most important work, and the last two rethinking what software should even be.</p>
+    <p class="intro-body">I build human-centered, AI-powered experiences for Word, Excel, and PowerPoint. Previously, I led video intelligence at Microsoft Stream (now Clipchamp).</p>
   </div>
 </section>
 
@@ -920,302 +1029,84 @@
     <span class="section-count">Microsoft · 2020–Present</span>
   </div>
 
-  <!-- ROLE 1: June 2025 – Present -->
-  <div class="role-block" style="margin-top: 0; border-top: none;">
-    <div class="role-header">
-      <div class="role-left">
-        <span class="role-date">June 2025 – Present</span>
-        <span class="role-title-text">Senior Product Designer</span>
-        <span class="role-company">Word, Excel, PowerPoint · Microsoft</span>
+  <div class="proj-scatter">
+    <!-- 01 Parallel work — top right, medium -->
+    <div class="ps-item ps-item--1" id="parallel-tasks" data-href="case-study.html">
+      <div class="ps-img">
+        <img src="https://picsum.photos/seed/parallel/900/675" alt="">
       </div>
-      <p class="role-intro" data-old="Word, Excel, and PowerPoint are being fundamentally rethought. AI is changing what these tools can do — not just adding features, but reshaping how people actually work inside them. I lead design across two of the biggest bets: async work, and how the suite learns and adapts to each person over time.">Word, Excel, and PowerPoint are being fundamentally rethought. AI is changing what these tools can do — not just adding features, but reshaping how people actually work inside them. I lead design across three bets: letting people hold parallel work without losing context, teaching the suite to recognize what's actually time-sensitive, and building recommendations that learn from how each person works. The throughline is trust — getting the suite to step in exactly when it's useful, and stay out of the way everywhere else.</p>
-    </div>
-
-    <!-- Parallel tasks -->
-    <div class="role-project" id="parallel-tasks">
-      <div class="rp-hero">
-        <div class="rp-hero-img">
-          <img src="https://picsum.photos/seed/parallel/1600/900" alt="">
-        </div>
-      </div>
-      <div class="rp-intro">
+      <div class="ps-info">
         <div>
-          <a class="rp-title-link" href="case-study.html">
-            <h2 class="rp-title">Parallel work</h2>
-            <span class="rp-arrow">↗</span>
-          </a>
+          <p class="ps-num">01</p>
+          <p class="ps-title">Parallel work</p>
+          <p class="ps-era">WXP · 2025–Present</p>
         </div>
-        <p class="rp-lead" data-old="Designing systems that let people hold multiple work streams without losing context — across Word, Excel, and PowerPoint.">Designing for work that doesn't happen in a straight line — letting people move between Word, Excel, and PowerPoint without losing their place in any of them.</p>
-      </div>
-      <div class="rp-details">
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Research · Discovery</p>
-          <p class="rp-detail-text">Placeholder for detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Design · Systems</p>
-          <p class="rp-detail-text">Placeholder for another detail.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Outcome</p>
-          <p class="rp-detail-text">Impact, metrics, or what shipped.</p>
-        </div>
+        <a class="ps-link" href="case-study.html" target="_blank">View project ↗</a>
       </div>
     </div>
 
-    <!-- Personalized recommendations -->
-    <div class="role-project" id="personalized-recs">
-      <div class="rp-hero">
-        <div class="rp-hero-img">
-          <img src="https://picsum.photos/seed/personalrec/1600/900" alt="">
-        </div>
+    <!-- 02 Personalized recs — large, left -->
+    <div class="ps-item ps-item--2" id="personalized-recs">
+      <div class="ps-img">
+        <img src="https://picsum.photos/seed/personalrec/1200/750" alt="">
       </div>
-      <div class="rp-intro">
+      <div class="ps-info">
         <div>
-          <div class="rp-title-link">
-            <h2 class="rp-title">Personalized<br>recommendations</h2>
-          </div>
+          <p class="ps-num">02</p>
+          <p class="ps-title">Personalized recommendations</p>
+          <p class="ps-era">WXP · 2025–Present</p>
         </div>
-        <p class="rp-lead" data-old="Designing a system that learns what each person needs across Word, Excel, and PowerPoint — surfacing the right suggestions at the right moment, without getting in the way.">Building a system that learns how each person actually works across Word, Excel, and PowerPoint — so the right suggestion shows up before you have to look for it.</p>
-      </div>
-      <div class="rp-details">
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Research · Discovery</p>
-          <p class="rp-detail-text">Placeholder for detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Design · Systems</p>
-          <p class="rp-detail-text">Placeholder for another detail.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Outcome</p>
-          <p class="rp-detail-text">Impact, metrics, or what shipped.</p>
-        </div>
+        <span class="ps-link">Coming soon</span>
       </div>
     </div>
+
+    <!-- 03 Copilot for video — small portrait, right, overlapping -->
+    <div class="ps-item ps-item--3" id="copilot-video">
+      <div class="ps-img">
+        <img src="https://picsum.photos/seed/copilot/600/800" alt="">
+      </div>
+      <div class="ps-info">
+        <div>
+          <p class="ps-num">03</p>
+          <p class="ps-title">Copilot for video</p>
+          <p class="ps-era">Stream · 2020–2024</p>
+        </div>
+        <span class="ps-link">Coming soon</span>
+      </div>
+    </div>
+
+    <!-- 04 Auto-chaptering — medium, center-left -->
+    <div class="ps-item ps-item--4" id="auto-chaptering">
+      <div class="ps-img">
+        <img src="https://picsum.photos/seed/filmchapter/1000/560" alt="">
+      </div>
+      <div class="ps-info">
+        <div>
+          <p class="ps-num">04</p>
+          <p class="ps-title">Auto-chaptering</p>
+          <p class="ps-era">Stream · 2020–2024</p>
+        </div>
+        <span class="ps-link">Coming soon</span>
+      </div>
+    </div>
+
+    <!-- 05 Points of Interest — wide cinematic, center -->
+    <div class="ps-item ps-item--5" id="poi">
+      <div class="ps-img">
+        <img src="https://picsum.photos/seed/mapsview/1400/600" alt="">
+      </div>
+      <div class="ps-info">
+        <div>
+          <p class="ps-num">05</p>
+          <p class="ps-title">Points of Interest</p>
+          <p class="ps-era">Stream · 2020–2024</p>
+        </div>
+        <span class="ps-link">Coming soon</span>
+      </div>
+    </div>
+
   </div>
 
-  <!-- ROLE 2: Nov 2020 – June 2024 -->
-  <div class="role-block">
-    <div class="role-header">
-      <div class="role-left">
-        <span class="role-date">Nov 2020 – June 2024</span>
-        <span class="role-title-text">Designer II</span>
-        <span class="role-company">Microsoft Stream</span>
-      </div>
-      <p class="role-intro" data-old="Add your intro here — what you worked on as Designer II at Microsoft Stream, the kinds of projects you led, and the impact you made across video and collaboration products.">At Stream, I designed the AI layer that made long video usable. Auto-chaptering gave hours of footage a structure it didn't ship with. Points of Interest surfaced the moments worth returning to. Copilot for video tied it together — letting people search, summarize, and navigate video the way they'd navigate a document. Across all three, the goal was the same: nobody should have to scrub through an hour of footage to find the thirty seconds that matter.</p>
-    </div>
-
-    <!-- Copilot for video -->
-    <div class="role-project" id="copilot-video">
-      <div class="rp-hero">
-        <div class="rp-hero-img">
-          <img src="https://picsum.photos/seed/copilot/1600/900" alt="">
-        </div>
-      </div>
-      <div class="rp-intro">
-        <div>
-          <div class="rp-title-link">
-            <h2 class="rp-title">Copilot for video</h2>
-          </div>
-        </div>
-        <p class="rp-lead" data-old="Bringing AI into the video experience — summaries, search, and navigation that work the way people actually think about video content.">Bringing AI into video the way people actually watch it — summaries, search, and navigation built around moments, not timestamps.</p>
-      </div>
-      <div class="rp-details">
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Research · Discovery</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Design</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Outcome</p>
-          <p class="rp-detail-text">Impact placeholder.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Auto-chaptering -->
-    <div class="role-project" id="auto-chaptering">
-      <div class="rp-hero">
-        <div class="rp-hero-img">
-          <img src="https://picsum.photos/seed/filmchapter/1600/900" alt="">
-        </div>
-      </div>
-      <div class="rp-intro">
-        <div>
-          <div class="rp-title-link">
-            <h2 class="rp-title">Auto-chaptering</h2>
-          </div>
-        </div>
-        <p class="rp-lead" data-old="Using AI to automatically structure long-form video — chapters that make content navigable and findable without any manual effort.">Giving long videos a structure they didn't ship with — using AI to break footage into chapters people can scan, skip, and return to.</p>
-      </div>
-      <div class="rp-details">
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Research · Discovery</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Design</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Outcome</p>
-          <p class="rp-detail-text">Impact placeholder.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Points of Interest -->
-    <div class="role-project" id="poi">
-      <div class="rp-hero">
-        <div class="rp-hero-img">
-          <img src="https://picsum.photos/seed/mapsview/1600/900" alt="">
-        </div>
-      </div>
-      <div class="rp-intro">
-        <div>
-          <div class="rp-title-link">
-            <h2 class="rp-title">Points of Interest</h2>
-          </div>
-        </div>
-        <p class="rp-lead" data-old="Surfacing meaningful moments within video — the clips, highlights, and sections worth returning to, made discoverable at a glance.">Surfacing the moments in a video worth finding again — highlights and key beats made visible at a glance, without scrubbing through everything else.</p>
-      </div>
-      <div class="rp-details">
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Research · Discovery</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Design</p>
-          <p class="rp-detail-text">Placeholder detail content.</p>
-        </div>
-        <div>
-          <div class="rp-detail-img"></div>
-          <p class="rp-detail-label">Outcome</p>
-          <p class="rp-detail-text">Impact placeholder.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-<!-- ─── PUBLICATIONS + AWARDS ─── -->
-<section id="pubs" style="margin-top: 100px;">
-  <div class="section-header">
-    <span class="section-label">Publications & Recognition</span>
-    <span class="section-count">12 entries</span>
-  </div>
-  <div class="pubs-list">
-
-    <div class="pub-sub-label">Papers</div>
-
-    <a class="pub-row" href="https://dl.designresearchsociety.org/drs-conference-papers/drs2020/researchpapers/114/" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M1 1h6l3 3v8H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Teaching Design Strategy for Social Impact</span>
-      <span class="pub-source">DRS Conference · Brisbane, Australia</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="https://www.researchgate.net/publication/343950018_Mediating_Piatt_Park_Addressing_Crime_Prone_Public_Spaces_through_Design" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M1 1h6l3 3v8H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Mediating Piatt Park</span>
-      <span class="pub-source">DMI · Toronto, Canada</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="https://www.researchgate.net/publication/343949808_From_Self-Advocacy_to_Public_History_Building_Collaborative_Capacity_among_Remote_Communities" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M1 1h6l3 3v8H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">From Self-Advocacy to Public History</span>
-      <span class="pub-source">DMI · Toronto, Canada</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="https://www.researchgate.net/publication/343921637_Curatorial_Groupware_Designing_Collaborative_Curation_Tools_for_Public_Exhibition_of_Community-Built_Archives" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M1 1h6l3 3v8H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Curatorial Groupware</span>
-      <span class="pub-source">IASDR · Manchester, UK</span>
-      <span class="pub-year">2019</span>
-    </a>
-
-    <a class="pub-row" href="https://wdo.org/programmes/wd-talks/un-women-16-days-of-activism/" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><path d="M1 1h6l3 3v8H1V1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/><path d="M7 1v3h3" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Design Against Gender-Based Violence</span>
-      <span class="pub-source">UN Women · World Design Organization</span>
-      <span class="pub-year">2019</span>
-    </a>
-
-    <div class="pub-sub-label" style="margin-top: 24px;">Poster Presentations</div>
-
-    <a class="pub-row" href="#">
-      <span class="pub-icon"><svg width="13" height="11" viewBox="0 0 13 11" fill="none"><rect x="1" y="1" width="11" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="4" cy="4" r="1" fill="currentColor"/><path d="M1 8.5l3-3 2.5 2.5 1.5-1.5L11 9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="pub-title">Curatorial Groupware</span>
-      <span class="pub-source">AIGA · Pittsburgh, USA</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="#">
-      <span class="pub-icon"><svg width="13" height="11" viewBox="0 0 13 11" fill="none"><rect x="1" y="1" width="11" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="4" cy="4" r="1" fill="currentColor"/><path d="M1 8.5l3-3 2.5 2.5 1.5-1.5L11 9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="pub-title">Visualizing Self-Advocacy</span>
-      <span class="pub-source">DAAPCARES · U of Cincinnati</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="#">
-      <span class="pub-icon"><svg width="13" height="11" viewBox="0 0 13 11" fill="none"><rect x="1" y="1" width="11" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="4" cy="4" r="1" fill="currentColor"/><path d="M1 8.5l3-3 2.5 2.5 1.5-1.5L11 9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="pub-title">Mediating Piatt Park</span>
-      <span class="pub-source">DAAPCARES · U of Cincinnati</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="#">
-      <span class="pub-icon"><svg width="13" height="11" viewBox="0 0 13 11" fill="none"><rect x="1" y="1" width="11" height="9" rx="1" stroke="currentColor" stroke-width="1.1"/><circle cx="4" cy="4" r="1" fill="currentColor"/><path d="M1 8.5l3-3 2.5 2.5 1.5-1.5L11 9" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="pub-title">Demystifying Traditions</span>
-      <span class="pub-source">DAAPCARES · U of Cincinnati</span>
-      <span class="pub-year">2019</span>
-    </a>
-
-    <div class="pub-sub-label" style="margin-top: 24px;">Awards & Talks</div>
-
-    <a class="pub-row" href="https://daap.uc.edu/news-events/outstanding-graduating-students-2020" target="_blank">
-      <span class="pub-icon"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1l1.4 3.8H12L8.8 7.2l1.2 3.8-3.5-2.3L3 11l1.2-3.8L1 4.8h4.1z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg></span>
-      <span class="pub-title">Outstanding Student of the Year</span>
-      <span class="pub-source">U of Cincinnati</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="https://wdo.org/programmes/wd-talks/un-women-16-days-of-activism/" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><rect x="3.5" y="1" width="4" height="7" rx="2" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 6.5c0 2.2 1.8 4 4 4s4-1.8 4-4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="5.5" y1="10.5" x2="5.5" y2="12.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Presenter · Design Against Gender-Based Violence</span>
-      <span class="pub-source">UN Women · World Design Organization</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-    <a class="pub-row" href="https://www.youtube.com/watch?v=0IMLa9do5E0&t=1176s" target="_blank">
-      <span class="pub-icon"><svg width="11" height="13" viewBox="0 0 11 13" fill="none"><rect x="3.5" y="1" width="4" height="7" rx="2" stroke="currentColor" stroke-width="1.1"/><path d="M1.5 6.5c0 2.2 1.8 4 4 4s4-1.8 4-4" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><line x1="5.5" y1="10.5" x2="5.5" y2="12.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg></span>
-      <span class="pub-title">Presenter · Discovery in Agile CX Cycles</span>
-      <span class="pub-source">Digital CX Meetup</span>
-      <span class="pub-year">2020</span>
-    </a>
-
-  </div>
 </section>
 
 <!-- ─── PRESENTATIONS ─── -->
@@ -1280,6 +1171,15 @@
       </div>
     </a>
 
+    <div class="writing-card">
+      <div class="writing-card-bg" style="background: #1a0f2e;"></div>
+      <div class="writing-card-overlay"></div>
+      <div class="writing-card-content">
+        <p class="writing-card-title">Demystifying Traditions</p>
+        <p class="writing-card-year">DAAPCARES · 2019 · add poster image</p>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1300,7 +1200,7 @@
 
 <div class="footer-bar">
   <span>© 2026 Neha Mann</span>
-  <span>Senior designer · Office, Microsoft</span>
+  <a href="index-alt.html" style="color:var(--dim);text-decoration:none;letter-spacing:0.2em;font-size:10px;opacity:0.6;transition:opacity 0.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">Alt version ↗</a>
 </div>
 
 <div id="controls">
@@ -1324,127 +1224,70 @@
     cur.style.top  = e.clientY + 'px';
   });
 
-  /* ─── CHALK ─── */
-  const chalkCanvas = document.getElementById('chalk');
-  const ctx = chalkCanvas.getContext('2d');
-  const timerEl = document.getElementById('chalk-timer');
-  let lastX = null, lastY = null;
-
-  // Colors: [r, g, b]
-  const chalkColors = [
-    [255, 255, 250],  // white
-    [255, 220, 60],   // yellow
-    [255, 95, 75],    // red
-    [80, 180, 255],   // blue
-    [90, 230, 150],   // green
-    [255, 140, 210],  // pink
-  ];
-  let colorIdx = 0;
-
-  function getColor(alpha) {
-    const [r,g,b] = chalkColors[colorIdx];
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
-
-  // Change color on click
-  document.addEventListener('click', () => {
-    colorIdx = (colorIdx + 1) % chalkColors.length;
-    // flash the cursor to signal color change
-    const [r,g,b] = chalkColors[colorIdx];
-    cur.style.background = `rgb(${r},${g},${b})`;
-  });
-
-  function resizeChalk() {
-    chalkCanvas.width  = window.innerWidth;
-    chalkCanvas.height = window.innerHeight;
-  }
-  resizeChalk();
-  window.addEventListener('resize', resizeChalk);
-
-  // Stardust stamp — sparse, like the Moon Chalk box pattern
-  const bumps = [];
-  (function generateStars() {
-    for (let i = 0; i < 14; i++) {
-      const r = Math.pow(Math.random(), 0.5) * 0.9;
-      const a = Math.random() * Math.PI * 2;
-      const sz = Math.random() < 0.15
-        ? 1.4 + Math.random() * 0.8   // occasional brighter speck
-        : 0.3 + Math.random() * 0.7;  // mostly dust
-      bumps.push([Math.cos(a) * r, Math.sin(a) * r, sz]);
-    }
+  /* ─── RED CURSOR ON HERO TEXT ─── */
+  (function () {
+    const heroText = document.querySelector('.hero-text');
+    if (!heroText) return;
+    heroText.addEventListener('mouseenter', () => { cur.style.background = 'rgb(255,95,75)'; });
+    heroText.addEventListener('mouseleave', () => { cur.style.background = 'rgba(255,255,252,0.9)'; });
   })();
 
-  const STAMP_R   = 20;  // spread radius px
-  const STAMP_GAP = 22;  // px between stamps — wide gap = sparse
+  /* ─── LASSO ZOOM ─── */
+  (function () {
+    const hero   = document.querySelector('.hero');
+    const selEl  = document.getElementById('lasso-sel');
+    let startX, startY, selecting = false, currentScale = 1;
 
-  let travelDist = 0;
-  let rollAngle  = 0;
-
-  function stamp(x, y) {
-    bumps.forEach(([bx, by, dotSz]) => {
-      const rx = bx * Math.cos(rollAngle) - by * Math.sin(rollAngle);
-      const ry = bx * Math.sin(rollAngle) + by * Math.cos(rollAngle);
-      const jx = rx * STAMP_R + (Math.random() - 0.5) * 1.5;
-      const jy = ry * STAMP_R + (Math.random() - 0.5) * 1.5;
-      const alpha = 0.5 + Math.random() * 0.45;
-      ctx.beginPath();
-      ctx.ellipse(
-        x + jx, y + jy,
-        dotSz,
-        dotSz * (0.5 + Math.random() * 0.9),
-        Math.random() * Math.PI,
-        0, Math.PI * 2
-      );
-      ctx.fillStyle = getColor(alpha);
-      ctx.fill();
-    });
-  }
-
-  function drawChalk(x, y) {
-    if (lastX === null) { lastX = x; lastY = y; return; }
-
-    const dist  = Math.hypot(x - lastX, y - lastY);
-    const angle = Math.atan2(y - lastY, x - lastX);
-
-    rollAngle  += dist / STAMP_R;
-    travelDist += dist;
-
-    const steps = Math.floor(travelDist / STAMP_GAP);
-    if (steps > 0) {
-      travelDist %= STAMP_GAP;
-      for (let i = 0; i < steps; i++) {
-        const t = (i + 1) / steps;
-        stamp(
-          lastX + (x - lastX) * t,
-          lastY + (y - lastY) * t
-        );
-      }
+    function zoomTo(sx, sy, sw, sh) {
+      if (sw < 20 || sh < 20) return;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const scale = Math.min(vw / sw, vh / sh) * 0.9;
+      const cx = sx + sw / 2, cy = sy + sh / 2;
+      const tx = vw / 2 - cx * scale;
+      const ty = vh / 2 - cy * scale;
+      currentScale = scale;
+      hero.style.transformOrigin = '0 0';
+      hero.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+      if (scale > 2.5) document.body.classList.add('zoomed-deep');
     }
 
-    lastX = x;
-    lastY = y;
-  }
+    function resetZoom() {
+      currentScale = 1;
+      hero.style.transform = '';
+      document.body.classList.remove('zoomed-deep');
+      selecting = false;
+      selEl.style.display = 'none';
+    }
 
-  document.addEventListener('mousemove', e => drawChalk(e.clientX, e.clientY));
-  document.addEventListener('mouseleave', () => { lastX = null; lastY = null; });
+    hero.addEventListener('mousedown', e => {
+      if (document.body.classList.contains('edit-mode')) return;
+      if (e.target.closest('a, button')) return;
+      if (currentScale > 1) { resetZoom(); return; }
+      e.preventDefault();
+      selecting = true;
+      startX = e.clientX; startY = e.clientY;
+      selEl.style.cssText = `display:block;left:${startX}px;top:${startY}px;width:0;height:0;`;
+    });
 
-  /* ─── CHALK TIMER + RESET ─── */
-  const RESET_SECS = 10;
-  let secondsLeft = RESET_SECS;
+    document.addEventListener('mousemove', e => {
+      if (!selecting) return;
+      const x = Math.min(e.clientX, startX), y = Math.min(e.clientY, startY);
+      const w = Math.abs(e.clientX - startX), h = Math.abs(e.clientY - startY);
+      selEl.style.left = x + 'px'; selEl.style.top = y + 'px';
+      selEl.style.width = w + 'px'; selEl.style.height = h + 'px';
+    });
 
-  function resetChalk() {
-    ctx.clearRect(0, 0, chalkCanvas.width, chalkCanvas.height);
-    secondsLeft = RESET_SECS;
-    timerEl.classList.remove('ending');
-  }
+    document.addEventListener('mouseup', e => {
+      if (!selecting) return;
+      selecting = false;
+      selEl.style.display = 'none';
+      const x = Math.min(e.clientX, startX), y = Math.min(e.clientY, startY);
+      zoomTo(x, y, Math.abs(e.clientX - startX), Math.abs(e.clientY - startY));
+    });
 
-  setInterval(() => {
-    secondsLeft--;
-    const s = secondsLeft < 10 ? '0:0' + secondsLeft : '0:' + secondsLeft;
-    timerEl.textContent = s;
-    if (secondsLeft <= 3) timerEl.classList.add('ending');
-    if (secondsLeft <= 0) resetChalk();
-  }, 1000);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') resetZoom(); });
+    hero.addEventListener('dblclick', resetZoom);
+  })();
 
   /* ─── FIT HERO TEXT ─── */
   function fitLine(el, maxW) {
@@ -1466,51 +1309,14 @@
   document.fonts.ready.then(fitAll);
   window.addEventListener('resize', fitAll);
 
-  /* ─── COPY TOGGLE ─── */
-  (function () {
-    var btn = document.getElementById('copy-toggle');
-    var nodes = Array.prototype.slice.call(document.querySelectorAll('[data-old]'));
-    var showingOld = false;
-
-    nodes.forEach(function (el) {
-      el.dataset.new = el.textContent;
-    });
-
-    function render() {
-      nodes.forEach(function (el) {
-        el.textContent = showingOld ? el.dataset.old : el.dataset.new;
-      });
-      if (btn) {
-        btn.textContent = showingOld ? 'Old copy · press c' : 'New copy · press c';
-        btn.classList.toggle('is-old', showingOld);
-        btn.setAttribute('aria-pressed', String(showingOld));
-      }
-    }
-
-    function toggle(e) {
-      if (e) e.stopPropagation();
-      showingOld = !showingOld;
-      render();
-    }
-
-    if (btn) btn.addEventListener('click', toggle);
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key !== 'c' && e.key !== 'C') return;
-      var active = document.activeElement;
-      var tag = active && active.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || (active && active.isContentEditable)) return;
-      toggle();
-    });
-
-    render();
-  })();
 
   /* ─── EDIT MODE ─── */
   (function () {
     const EDITABLE = [
-      '.intro-body', '.role-intro', '.role-company', '.role-date', '.role-title-text',
+      '.intro-body', '.intro-links', '.role-intro', '.role-company', '.role-date', '.role-title-text',
       '.rp-title', '.rp-lead', '.rp-detail-text', '.rp-detail-label',
+      '.proj-title', '.proj-lead', '.proj-era', '.proj-num',
+      '.ps-title', '.ps-era', '.ps-num',
       '.writing-card-title', '.writing-card-year',
       '.pub-title', '.pub-source', '.pub-year',
       '.intro-name', '.intro-role'
@@ -1680,6 +1486,15 @@
       });
     }
   })();
+</script>
+
+<script>
+  /* ─── PROJECT CARD CLICK → NEW TAB ─── */
+  document.querySelectorAll('.ps-item[data-href]').forEach(card => {
+    card.addEventListener('click', function () {
+      window.open(this.dataset.href, '_blank');
+    });
+  });
 </script>
 </body>
 </html>

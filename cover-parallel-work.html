@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parallel Work — Cover Animation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #fff;
+    width: 900px; height: 580px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  /* ── PHASE 1: Input ── */
+  #phase-input {
+    position: absolute;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .input-wrap {
+    position: relative;
+    width: 483px; height: 44px;
+  }
+  .input-wrap > img { width: 100%; height: 100%; display: block; }
+
+  /* text overlay — white bg hides the baked-in placeholder text */
+  .text-layer {
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 38px; right: 112px;
+    overflow: hidden;
+    display: flex; align-items: center;
+    background: #fff;
+  }
+  .slot-track {
+    display: flex; flex-direction: column; width: 100%;
+    transition: transform 0.36s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .slot-line {
+    height: 20px; display: flex; align-items: center;
+    font-size: 13px; color: #1a1a1a;
+    white-space: nowrap; letter-spacing: -0.01em; flex-shrink: 0;
+  }
+  .cursor {
+    display: inline-block; width: 1.5px; height: 14px;
+    background: #555; margin-left: 1px;
+    animation: blink 1s step-end infinite; flex-shrink: 0;
+  }
+  .cursor.off { opacity: 0; animation: none; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* send button ripple overlay */
+  .send-ripple {
+    position: absolute;
+    right: 6px; top: 50%; transform: translateY(-50%);
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(0,0,0,0); pointer-events: none;
+    transition: transform 0.12s ease, background 0.12s ease;
+  }
+  .send-ripple.click {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-50%) scale(1.18);
+  }
+
+  /* ── PHASE 2: Loading ── */
+  #phase-loading {
+    position: absolute;
+    display: none; flex-direction: column; align-items: center; gap: 0;
+    opacity: 0;
+  }
+
+  .status-row {
+    display: flex; align-items: center; gap: 10px;
+    height: 32px; overflow: hidden;
+  }
+  .copilot-icon-mono {
+    width: 22px; height: 22px; flex-shrink: 0;
+  }
+  .status-slot {
+    overflow: hidden; height: 22px; display: flex; align-items: center;
+  }
+  .status-track {
+    display: flex; flex-direction: column;
+    transition: transform 0.38s cubic-bezier(0.76, 0, 0.24, 1);
+  }
+  .status-line {
+    height: 22px; display: flex; align-items: center;
+    font-size: 15px; color: #767676; white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ── PHASE 3: Done ── */
+  #phase-done {
+    position: absolute;
+    display: none; align-items: center; gap: 12px;
+    opacity: 0;
+  }
+  .copilot-icon-color {
+    width: 32px; height: 32px; flex-shrink: 0;
+  }
+  .done-text {
+    font-size: 18px; color: #2d2d2d; letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<!-- Phase 1: Input box -->
+<div id="phase-input">
+  <div class="input-wrap">
+    <img src="prompt-box.svg" alt="">
+    <div class="text-layer">
+      <div class="slot-track" id="track">
+        <div class="slot-line" id="l0"></div>
+        <div class="slot-line" id="l1"></div>
+        <div class="slot-line" id="l2"></div>
+      </div>
+      <span class="cursor" id="cur"></span>
+    </div>
+    <div class="send-ripple" id="ripple"></div>
+  </div>
+</div>
+
+<!-- Phase 2: Copilot loading -->
+<div id="phase-loading">
+  <div class="status-row">
+    <!-- Monochrome Copilot icon -->
+    <svg class="copilot-icon-mono" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="22" height="22" rx="5" fill="#1a1a1a"/>
+      <path d="M11 5.5C8.515 5.5 6.5 7.515 6.5 10C6.5 11.38 7.09 12.62 8.03 13.5H7C6.72 13.5 6.5 13.72 6.5 14C6.5 14.28 6.72 14.5 7 14.5H15C15.28 14.5 15.5 14.28 15.5 14C15.5 13.72 15.28 13.5 15 13.5H13.97C14.91 12.62 15.5 11.38 15.5 10C15.5 7.515 13.485 5.5 11 5.5ZM11 6.5C12.933 6.5 14.5 8.067 14.5 10C14.5 11.933 12.933 13.5 11 13.5C9.067 13.5 7.5 11.933 7.5 10C7.5 8.067 9.067 6.5 11 6.5ZM9.5 16C9.22 16 9 16.22 9 16.5C9 16.78 9.22 17 9.5 17H12.5C12.78 17 13 16.78 13 16.5C13 16.22 12.78 16 12.5 16H9.5Z" fill="white"/>
+    </svg>
+    <div class="status-slot">
+      <div class="status-track" id="status-track">
+        <div class="status-line">Adding finishing touches…</div>
+        <div class="status-line">Lining things up…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Phase 3: Done -->
+<div id="phase-done">
+  <!-- Colorful Copilot icon -->
+  <svg class="copilot-icon-color" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#2DCCFF"/>
+        <stop offset="50%" stop-color="#A259FF"/>
+        <stop offset="100%" stop-color="#FF6B6B"/>
+      </linearGradient>
+      <linearGradient id="g2" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0%" stop-color="#FFD93D"/>
+        <stop offset="100%" stop-color="#6BCB77"/>
+      </linearGradient>
+    </defs>
+    <rect width="32" height="32" rx="8" fill="url(#g1)"/>
+    <path d="M16 7C12.134 7 9 10.134 9 14C9 15.78 9.64 17.41 10.7 18.67L9.5 19H22.5L21.3 18.67C22.36 17.41 23 15.78 23 14C23 10.134 19.866 7 16 7Z" fill="white" opacity="0.9"/>
+    <rect x="12" y="21" width="8" height="1.5" rx="0.75" fill="white" opacity="0.8"/>
+    <rect x="13.5" y="23.5" width="5" height="1.5" rx="0.75" fill="white" opacity="0.7"/>
+  </svg>
+  <div class="done-text">I'll figure it out. You just hit send.</div>
+</div>
+
+<script>
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+const msgs = [
+  'Also, I forgot to add something.',
+  'That\'s not exactly what I meant.',
+  'BTW, when am I meeting Kate?'
+];
+
+async function type(el, text, speed = 46) {
+  for (let i = 0; i <= text.length; i++) {
+    el.textContent = text.slice(0, i);
+    await wait(speed + (Math.random() * 18 - 9));
+  }
+}
+
+function slotTo(track, i, lineH = 20) {
+  track.style.transform = `translateY(${-i * lineH}px)`;
+}
+
+async function fadeIn(el, ms = 300) {
+  el.style.display = el.dataset.display || 'flex';
+  el.style.opacity = '0';
+  el.style.transition = `opacity ${ms}ms ease`;
+  await wait(20);
+  el.style.opacity = '1';
+  await wait(ms);
+}
+
+async function fadeOut(el, ms = 250) {
+  el.style.transition = `opacity ${ms}ms ease`;
+  el.style.opacity = '0';
+  await wait(ms);
+  el.style.display = 'none';
+}
+
+async function run() {
+  const phaseInput   = document.getElementById('phase-input');
+  const phaseLoading = document.getElementById('phase-loading');
+  const phaseDone    = document.getElementById('phase-done');
+  const track        = document.getElementById('track');
+  const cur          = document.getElementById('cur');
+  const ripple       = document.getElementById('ripple');
+  const statusTrack  = document.getElementById('status-track');
+  const lines = [0,1,2].map(i => document.getElementById('l' + i));
+
+  phaseLoading.dataset.display = 'flex';
+  phaseDone.dataset.display = 'flex';
+
+  // ── Phase 1: type + slot ──
+  await wait(400);
+  await type(lines[0], msgs[0]);
+  await wait(600);
+
+  lines[1].textContent = msgs[1];
+  cur.classList.add('off');
+  slotTo(track, 1);
+  await wait(380); cur.classList.remove('off');
+  await wait(800);
+
+  lines[2].textContent = msgs[2];
+  cur.classList.add('off');
+  slotTo(track, 2);
+  await wait(380); cur.classList.remove('off');
+  await wait(600);
+
+  // ── Send button click ──
+  cur.classList.add('off');
+  ripple.classList.add('click');
+  await wait(140);
+  ripple.classList.remove('click');
+  await wait(100);
+
+  // ── Transition to loading ──
+  await fadeOut(phaseInput, 220);
+  await fadeIn(phaseLoading, 280);
+  await wait(1400);
+
+  // Slot loading message
+  statusTrack.style.transition = 'transform 0.36s cubic-bezier(0.76, 0, 0.24, 1)';
+  statusTrack.style.transform = 'translateY(-22px)';
+  await wait(1600);
+
+  // ── Transition to done ──
+  await fadeOut(phaseLoading, 220);
+  await fadeIn(phaseDone, 320);
+  await wait(2400);
+
+  location.reload();
+}
+
+run();
+</script>
+</body>
+</html>

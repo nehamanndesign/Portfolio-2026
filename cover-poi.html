@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Points of Interest — Cover Animation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #111;
+    width: 900px; height: 580px;
+    overflow: hidden;
+    font-family: -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  /* ── Video frame ── */
+  .player {
+    position: relative;
+    width: 100%; height: 100%;
+    transform-origin: center 92%;
+    will-change: transform;
+  }
+
+  .video-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(160deg, #2a2622 0%, #1a1614 50%, #111 100%);
+  }
+  /* Fake video content hint */
+  .video-hint {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%; height: 60%;
+    background: radial-gradient(ellipse at 35% 45%, rgba(80,65,55,0.5), transparent 70%);
+    border-radius: 4px;
+  }
+  /* Title top-left */
+  .video-title {
+    position: absolute;
+    top: 18px; left: 20px;
+    font-size: 13px; color: rgba(255,255,255,0.85);
+    letter-spacing: 0.01em;
+    font-weight: 400;
+  }
+
+  /* ── Control bar ── */
+  .controls {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 72px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+  }
+
+  /* Timeline row */
+  .timeline-wrap {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 32px;
+    display: flex; align-items: center;
+    padding: 0 16px;
+    cursor: default;
+  }
+
+  .timeline-track {
+    position: relative;
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.22);
+    border-radius: 2px;
+    overflow: visible;
+  }
+  .timeline-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 36%;
+    background: #c00;
+    border-radius: 2px;
+  }
+  /* Playhead */
+  .playhead {
+    position: absolute;
+    top: 50%; left: 36%;
+    width: 12px; height: 12px;
+    background: #c00;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  }
+
+  /* ── POI Markers ── */
+  .poi {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    transform-origin: center bottom;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+    will-change: transform;
+  }
+  /* Tooltip card above marker */
+  .poi-tooltip {
+    margin-bottom: 8px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .poi-tooltip img {
+    display: block;
+    width: 160px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+  }
+  .poi.show-tip .poi-tooltip {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Marker circle */
+  .poi-dot {
+    width: 20px; height: 20px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+  }
+  .poi-dot svg { width: 10px; height: 10px; }
+
+  /* control icons row */
+  .ctrl-row {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40px;
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 14px;
+  }
+  .ctrl-icon {
+    width: 18px; height: 18px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .ctrl-time {
+    font-size: 12px; color: rgba(255,255,255,0.7);
+    letter-spacing: 0.03em;
+  }
+  .ctrl-right {
+    margin-left: auto; display: flex; gap: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="player" id="player">
+  <div class="video-bg"></div>
+  <div class="video-hint"></div>
+  <div class="video-title">Microsoft SBC 2020 – Episode 1</div>
+
+  <div class="controls">
+
+    <!-- Timeline -->
+    <div class="timeline-wrap">
+      <div class="timeline-track" id="track">
+        <div class="timeline-fill"></div>
+        <div class="playhead"></div>
+
+        <!-- POI 1 -->
+        <div class="poi" id="p1" style="left: 18%">
+          <div class="poi-tooltip"><img src="poi-marker.svg" alt=""></div>
+          <div class="poi-dot">
+            <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 1.5C3.34 1.5 2 2.84 2 4.5C2 5.34 2.36 6.09 2.93 6.63L2.25 6.75H7.75L7.07 6.63C7.64 6.09 8 5.34 8 4.5C8 2.84 6.66 1.5 5 1.5ZM5 2.25C6.24 2.25 7.25 3.26 7.25 4.5C7.25 5.74 6.24 6.75 5 6.75C3.76 6.75 2.75 5.74 2.75 4.5C2.75 3.26 3.76 2.25 5 2.25ZM3.75 7.5C3.47 7.5 3.25 7.72 3.25 8C3.25 8.28 3.47 8.5 3.75 8.5H6.25C6.53 8.5 6.75 8.28 6.75 8C6.75 7.72 6.53 7.5 6.25 7.5H3.75Z" fill="#323130"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- POI 2 -->
+        <div class="poi" id="p2" style="left: 42%">
+          <div class="poi-tooltip"><img src="poi-marker.svg" alt=""></div>
+          <div class="poi-dot">
+            <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 1.5C3.34 1.5 2 2.84 2 4.5C2 5.34 2.36 6.09 2.93 6.63L2.25 6.75H7.75L7.07 6.63C7.64 6.09 8 5.34 8 4.5C8 2.84 6.66 1.5 5 1.5ZM5 2.25C6.24 2.25 7.25 3.26 7.25 4.5C7.25 5.74 6.24 6.75 5 6.75C3.76 6.75 2.75 5.74 2.75 4.5C2.75 3.26 3.76 2.25 5 2.25ZM3.75 7.5C3.47 7.5 3.25 7.72 3.25 8C3.25 8.28 3.47 8.5 3.75 8.5H6.25C6.53 8.5 6.75 8.28 6.75 8C6.75 7.72 6.53 7.5 6.25 7.5H3.75Z" fill="#323130"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- POI 3 — with tooltip -->
+        <div class="poi" id="p3" style="left: 68%">
+          <div class="poi-tooltip"><img src="poi-marker.svg" alt=""></div>
+          <div class="poi-dot">
+            <svg viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5 1.5C3.34 1.5 2 2.84 2 4.5C2 5.34 2.36 6.09 2.93 6.63L2.25 6.75H7.75L7.07 6.63C7.64 6.09 8 5.34 8 4.5C8 2.84 6.66 1.5 5 1.5ZM5 2.25C6.24 2.25 7.25 3.26 7.25 4.5C7.25 5.74 6.24 6.75 5 6.75C3.76 6.75 2.75 5.74 2.75 4.5C2.75 3.26 3.76 2.25 5 2.25ZM3.75 7.5C3.47 7.5 3.25 7.72 3.25 8C3.25 8.28 3.47 8.5 3.75 8.5H6.25C6.53 8.5 6.75 8.28 6.75 8C6.75 7.72 6.53 7.5 6.25 7.5H3.75Z" fill="#323130"/>
+            </svg>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Control icons -->
+    <div class="ctrl-row">
+      <div class="ctrl-icon" style="border-radius:50%"></div>
+      <div class="ctrl-icon" style="width:14px;border-radius:50%"></div>
+      <div class="ctrl-icon" style="width:14px;border-radius:50%"></div>
+      <div class="ctrl-icon" style="width:16px;height:14px;border-radius:50%"></div>
+      <span class="ctrl-time">4:12 / 50:20</span>
+      <div class="ctrl-right">
+        <div class="ctrl-icon" style="border-radius:50%"></div>
+        <div class="ctrl-icon" style="border-radius:1px"></div>
+        <div class="ctrl-icon" style="border-radius:50%"></div>
+        <div class="ctrl-icon" style="border-radius:50%"></div>
+        <div class="ctrl-icon" style="border-radius:1px"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const wait = ms => new Promise(r => setTimeout(r, ms));
+
+function popIn(el, overshoot = 1.22) {
+  return el.animate([
+    { transform: `${el.style.transform.replace(/scale\([^)]*\)/, '')} scale(0)`, offset: 0 },
+    { transform: `${el.style.transform.replace(/scale\([^)]*\)/, '')} scale(${overshoot})`, offset: 0.65 },
+    { transform: `${el.style.transform.replace(/scale\([^)]*\)/, '')} scale(0.95)`, offset: 0.82 },
+    { transform: `${el.style.transform.replace(/scale\([^)]*\)/, '')} scale(1)`, offset: 1 }
+  ], { duration: 420, easing: 'linear', fill: 'forwards' }).finished;
+}
+
+async function run() {
+  const player = document.getElementById('player');
+  const p1 = document.getElementById('p1');
+  const p2 = document.getElementById('p2');
+  const p3 = document.getElementById('p3');
+
+  // Start: zoom in on the timeline
+  await wait(300);
+  player.style.transition = 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)';
+  player.style.transform = 'scale(2.6)';
+  await wait(800);
+
+  // Markers pop in one by one
+  await popIn(p1);
+  await wait(380);
+  await popIn(p2);
+  await wait(380);
+  await popIn(p3);
+
+  // Show tooltip on p3
+  await wait(220);
+  p3.classList.add('show-tip');
+
+  await wait(2200);
+
+  // Show all tooltips briefly
+  p1.classList.add('show-tip');
+  p2.classList.add('show-tip');
+
+  await wait(1800);
+
+  // Zoom back out
+  player.style.transform = 'scale(1)';
+  await wait(1200);
+
+  await wait(600);
+  location.reload();
+}
+
+run();
+</script>
+</body>
+</html>
